@@ -41,6 +41,7 @@ namespace STVRogue.GameLogic
 
     public class Node
     {
+        public Random rnd = new Random();
         public String id;
         public List<Node> neighbors = new List<Node>();
         public List<Pack> packs = new List<Pack>();
@@ -61,6 +62,11 @@ namespace STVRogue.GameLogic
             neighbors.Remove(nd); nd.neighbors.Remove(this);
         }
 
+        public bool contested(Player player)
+        {
+            return (player.location == this && packs.Count > 0);
+        }
+
         /* Execute a fight between the player and the packs in this node.
          * Such a fight can take multiple rounds as describe in the Project Document.
          * A fight terminates when either the node has no more monster-pack, or when
@@ -68,7 +74,34 @@ namespace STVRogue.GameLogic
          */
         public void fight(Player player)
         {
-            throw new NotImplementedException();
+            /*Possibly to do:
+             - Attack after failed flee attempt? (currently present)*/
+            //throw new NotImplementedException(); //still missing node contest check
+            while (contested(player))
+            {                
+                Pack targetPack = packs[rnd.Next(packs.Count - 1)];
+                Monster targetMon = targetPack.members[rnd.Next(targetPack.members.Count - 1)];
+                player.Attack(targetMon);
+                if (targetPack.members == null) packs.Remove(targetPack);
+                Pack attackPack = packs[rnd.Next(packs.Count - 1)];
+                double fleeCheck = rnd.NextDouble();
+                if (fleeCheck <= (1 - attackPack.CurrentHP() / attackPack.startingHP) / 2)
+                {
+                    Logger.log("A pack tries to flee");
+                    foreach (Node n in attackPack.location.neighbors)
+                    {
+                        attackPack.move(n);
+                        if (n.packs.Contains(attackPack))
+                        {
+                            Logger.log("A pack flees!");
+                            packs.Remove(attackPack);
+                            if(contested(player)) attackPack = packs[rnd.Next(packs.Count - 1)];
+                            break;
+                        }                        
+                    }                  
+                }
+                attackPack.Attack(player);
+            }
         }
     }
 
