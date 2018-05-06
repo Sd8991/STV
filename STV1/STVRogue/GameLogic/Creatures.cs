@@ -77,7 +77,7 @@ namespace STVRogue.GameLogic
                 foreach (Monster target in foe_.pack.members)
                 {
                     base.Attack(target);
-                    if (target.HP == 0)
+                    if (target.HP <= 0)
                         deadFoes.Add(foe_);
                 }
                 foreach (Monster deadFoe in deadFoes)
