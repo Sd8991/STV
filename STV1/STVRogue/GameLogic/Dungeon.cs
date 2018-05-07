@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using STVRogue.Utils;
 
+
 namespace STVRogue.GameLogic
 {
     public class Dungeon
     {
         public Node startNode;
         public Node exitNode;
+		public Predicates predicates = new Predicates();
         public uint difficultyLevel;
         /* a constant multiplier that determines the maximum number of monster-packs per node: */
         public uint M;
@@ -25,17 +27,27 @@ namespace STVRogue.GameLogic
             difficultyLevel = level;
             M = nodeCapacityMultiplier;
 			r = new Random();
-			startNode = new Node("startNode");
-			exitNode  = new Node("exitNode");
-
-			Node[] bridges = new Node[level+2];
-			bridges[0] = startNode;
-			for (int i = 1; i <= level; i++)
+			bool ValidGraph = false;
+			while (!ValidGraph)
 			{
-				bridges[i] = new Bridge($"bridge {i}");
+				startNode = new Node("startNode");
+				exitNode  = new Node("exitNode");
+
+				Node[] bridges = new Node[level+2];
+				bridges[0] = startNode;
+				for (int i = 1; i <= level; i++)
+				{
+					bridges[i] = new Bridge($"bridge {i}");
+				}
+				bridges[level + 1] = exitNode;
+
+				GenerateDungeonGraph(bridges);
+				ValidGraph = predicates.isValidDungeon(startNode,exitNode,difficultyLevel);
+				if(ValidGraph)
+					Logger.log("Valid dungeonGraph");
+				else
+					Logger.log("Invalid dungeonGraph");
 			}
-			bridges[level + 1] = exitNode;
-			GenerateDungeonGraph(bridges);
         }
 
 		#region DungeonGraph generation
@@ -50,8 +62,7 @@ namespace STVRogue.GameLogic
 			{
 				GenerateSubGraph(bridges[i-1],bridges[i]);
 			}
-
-			//TODO: establish guarentee that average connectivity is below 3.0
+			
 			//TODO: populate dungeon with monsters/packs
 			//TODO: populate dungeon with items
 		}
@@ -77,20 +88,16 @@ namespace STVRogue.GameLogic
 			//connect the next new node to the already connected nodes (to guarrantee that the graph is full connected)
 			for (int i = 0; i < n; i++)
 			{
-				connectToRandomNodes(newNodes[i], connectedNodes, maxConnectivity, true);
+				connectToRandomNodes(newNodes[i], connectedNodes, true);
 				connectedNodes[i] = newNodes[i];
 			}
-
-			int endConnections = maxConnectivity;
-			if(endNode.GetType() == typeof(Bridge))//make sure a bridge has atleast 1 connection left to connect to the next zone
-				endConnections --;
-
+			
 			//connect the start and exit node of this subgraph
-			connectToRandomNodes(entryNode, connectedNodes, maxConnectivity, false);
-			connectToRandomNodes(endNode, connectedNodes, endConnections, true);
+			connectToRandomNodes(entryNode, connectedNodes, false);
+			connectToRandomNodes(endNode, connectedNodes, true);
 		}
 
-		private void connectToRandomNodes(Node thisNode, Node[] toNodes, int maxConnections, bool sameZone)
+		private void connectToRandomNodes(Node thisNode, Node[] toNodes, bool sameZone)
 		{
 			List<Node> validnodes = new List<Node>();	//only use nodes that can still get more connections	
 			foreach (Node n in toNodes)
@@ -101,8 +108,12 @@ namespace STVRogue.GameLogic
 			if(validnodes.Count == 0)
 				return; // no nodes to connect to
 			
-			int actualMaxConnections = Math.Min(validnodes.Count, maxConnections);//correct the maximum number of connections (can't make more connections than nodes available)
-			int nConnections = r.Next(1,actualMaxConnections);//atleast 1 so the node is actualy getting connected to the rest of the graph
+			int nConnections = 2;
+			if( thisNode.GetType != typeof(Bridge) )
+			{
+				int actualMaxConnections = Math.Min(validnodes.Count, 2);//correct the maximum number of connections (can't make more connections than nodes available)
+				nConnections = r.Next(1,actualMaxConnections);//atleast 1 so the node is actualy getting connected to the rest of the graph
+			}
 			for (int i = 0; i < nConnections; i++)
 			{
 				Node chosenNode = randomConnection(thisNode,validnodes,sameZone);
@@ -213,7 +224,10 @@ namespace STVRogue.GameLogic
         public void disconnect(Bridge b)
         {
             Logger.log("Disconnecting the bridge " + b.id + " from its zone.");
-            throw new NotImplementedException();
+			for (int i = 0; i < b.GetFromNodes.Count; i++)
+			{
+				b.disconnect(b.GetFromNodes[i]);
+			}
         }
 
         /* To calculate the level of the given node. */
@@ -344,6 +358,7 @@ namespace STVRogue.GameLogic
     public class Bridge : Node
     {
         List<Node> fromNodes = new List<Node>();
+		public List<Node> GetFromNodes {get {return fromNodes;}}
         List<Node> toNodes = new List<Node>();
         public Bridge(String id) : base(id) { }
 
