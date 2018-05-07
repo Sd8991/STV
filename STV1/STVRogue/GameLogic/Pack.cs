@@ -11,7 +11,7 @@ namespace STVRogue.GameLogic
     {
         String id;
         public List<Monster> members = new List<Monster>();
-        int startingHP = 0;
+        public int startingHP = 0;
         public Node location;
         public Dungeon dungeon;
 
@@ -24,6 +24,16 @@ namespace STVRogue.GameLogic
                 members.Add(m);
                 startingHP += m.HP;
             }
+        }
+
+        public int CurrentHP()
+        {
+            int currentHP = 0;
+            foreach (Monster m in members)
+            {
+                currentHP += m.HP;
+            }
+            return currentHP;
         }
 
         public void Attack(Player p)
