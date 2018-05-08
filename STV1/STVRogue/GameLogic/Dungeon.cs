@@ -17,6 +17,7 @@ namespace STVRogue.GameLogic
         /* a constant multiplier that determines the maximum number of monster-packs per node: */
         public uint M;
 		public int maxConnectivity = 4;
+        public Dictionary<int, List<Node>> zone;
 
 		private Random r;
 		
@@ -30,6 +31,7 @@ namespace STVRogue.GameLogic
 			bool ValidGraph = false;
 			while (!ValidGraph)
 			{
+                zone = new Dictionary<int, List<Node>>();
 				startNode = new Node("startNode");
 				exitNode  = new Node("exitNode");
 
@@ -42,6 +44,7 @@ namespace STVRogue.GameLogic
 				bridges[level + 1] = exitNode;
 
 				GenerateDungeonGraph(bridges);
+                zone[1].Add(startNode);
 				ValidGraph = predicates.isValidDungeon(startNode,exitNode,difficultyLevel);
 				if(ValidGraph)
 					Logger.log("Valid dungeonGraph");
@@ -60,7 +63,7 @@ namespace STVRogue.GameLogic
 
 			for (int i = 1; i < l; i++)
 			{
-				GenerateSubGraph(bridges[i-1],bridges[i]);
+				GenerateSubGraph(bridges[i-1],bridges[i], i);
 			}
 			
 			//TODO: populate dungeon with monsters/packs
@@ -68,7 +71,7 @@ namespace STVRogue.GameLogic
 		}
 
 		//generate a fully connected subgraph
-		private void GenerateSubGraph(Node entryNode, Node endNode, int minNodes = 1, int maxNodes = 10)
+		private void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 1, int maxNodes = 10)
 		{
 			//sanity checks
 			if(minNodes < 1)
@@ -95,6 +98,8 @@ namespace STVRogue.GameLogic
 			//connect the start and exit node of this subgraph
 			connectToRandomNodes(entryNode, connectedNodes, false);
 			connectToRandomNodes(endNode, connectedNodes, true);
+            List<Node> thisZone = connectedNodes.ToList<Node>();
+            thisZone.Add(endNode);
 		}
 
 		private void connectToRandomNodes(Node thisNode, Node[] toNodes, bool sameZone)
@@ -109,7 +114,7 @@ namespace STVRogue.GameLogic
 				return; // no nodes to connect to
 			
 			int nConnections = 2;
-			if( thisNode.GetType != typeof(Bridge) )
+			if( thisNode.GetType() != typeof(Bridge) )
 			{
 				int actualMaxConnections = Math.Min(validnodes.Count, 2);//correct the maximum number of connections (can't make more connections than nodes available)
 				nConnections = r.Next(1,actualMaxConnections);//atleast 1 so the node is actualy getting connected to the rest of the graph
@@ -350,7 +355,8 @@ namespace STVRogue.GameLogic
                         }                        
                     }                  
                 }
-                attackPack.Attack(player);
+                if (contested(player))
+                    attackPack.Attack(player);
             }
         }
     }
