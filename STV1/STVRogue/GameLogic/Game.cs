@@ -24,32 +24,59 @@ namespace STVRogue.GameLogic
             Logger.log("Creating a game of difficulty level " + difficultyLevel + ", node capacity multiplier "
                        + nodeCapcityMultiplier + ", and " + numberOfMonsters + " monsters.");
             player = new Player();
+			dungeon = new Dungeon(difficultyLevel, nodeCapcityMultiplier);
+			PopulateDugeon((int)numberOfMonsters);
         }
 
-		private void PopulateDugeon(Dictionary<int,List<Node>> zones, int monsters)
+		private void PopulateDugeon(int monsters)
 		{
 			int monstersLeft = monsters;
-			int l = zones.Count - 1;
+			int l = dungeon.zone.Count;
 
 			Random r = RandomGenerator.rnd;
-			int rMax = dungeon.M;
+			int rMax = (int)dungeon.M;
 
 			for (int i = 0; i < l; i++)
 			{
-				List<Node> curZone = zones[i];
-				int monstersThisZone = (2*i*monsters)/((dungeon.difficultyLevel+2)*(dungeon.difficultyLevel+1));
-				monstersLeft -= monstersThisZone;
+				List<Node> curZone = dungeon.zone[i];
+				int monstersThisZone = (2*i*monsters)/(int)((dungeon.difficultyLevel+2)*(dungeon.difficultyLevel+1));
+				if(monstersThisZone>monstersLeft)
+				{
+					monstersThisZone = monstersLeft;
+					monstersLeft = 0;
+				}
+				else
+				{
+					monstersLeft -= monstersThisZone;
+				}
+				//if (monstersThisZone > monstersLeft)
+				//	monstersThisZone = monstersLeft;
+				//monstersLeft -= monstersThisZone;				
+
 				int j = 1;
 				string idPrefix = "Pack-" + i + ".";
-				while(monsters>0)
+				while(monstersThisZone > 0)
 				{
-					uint nPack = r.Next(0,rMax);
-					Pack pack = new Pack(idPrefix + j,nPack);
-					j++;
-					monsters-nPack;
+					int nPack = r.Next(0,rMax);
+					int index = r.Next(curZone.Count);
+					if (curZone[index] == dungeon.exitNode)
+						continue;//not allowed to drop in exitnode, skip
 
+					int capacity = (int)(dungeon.M * (dungeon.level(curZone[index]) + 1));
+					// count monsters already in the node:
+					foreach (Pack Q in curZone[index].packs)
+					{
+						capacity = capacity - Q.members.Count;
+					}
+
+					if(capacity >= nPack)//if there is enough space, make and drop new pack
+					{
+						Pack pack = new Pack(idPrefix + j,(uint)nPack);
+						j++;
+						monstersLeft -= nPack;
+						curZone[index].packs.Add(pack);
+					}
 				}
-
 			}
 		}
 
