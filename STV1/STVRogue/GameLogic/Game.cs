@@ -26,6 +26,33 @@ namespace STVRogue.GameLogic
             player = new Player();
         }
 
+		private void PopulateDugeon(Dictionary<int,List<Node>> zones, int monsters)
+		{
+			int monstersLeft = monsters;
+			int l = zones.Count - 1;
+
+			Random r = RandomGenerator.rnd;
+			int rMax = dungeon.M;
+
+			for (int i = 0; i < l; i++)
+			{
+				List<Node> curZone = zones[i];
+				int monstersThisZone = (2*i*monsters)/((dungeon.difficultyLevel+2)*(dungeon.difficultyLevel+1));
+				monstersLeft -= monstersThisZone;
+				int j = 1;
+				string idPrefix = "Pack-" + i + ".";
+				while(monsters>0)
+				{
+					uint nPack = r.Next(0,rMax);
+					Pack pack = new Pack(idPrefix + j,nPack);
+					j++;
+					monsters-nPack;
+
+				}
+
+			}
+		}
+
         /*
          * A single update turn to the game. 
          */
