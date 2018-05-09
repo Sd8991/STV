@@ -25,10 +25,10 @@ namespace STVRogue.GameLogic
                        + nodeCapcityMultiplier + ", and " + numberOfMonsters + " monsters.");
             player = new Player();
 			dungeon = new Dungeon(difficultyLevel, nodeCapcityMultiplier);
-			PopulateDugeon((int)numberOfMonsters);
+			PopulateDungeon((int)numberOfMonsters);
         }
 
-		private void PopulateDugeon(int monsters)
+		private void PopulateDungeon(int monsters)
 		{
 			int monstersLeft = monsters;
 			int l = dungeon.zone.Count;

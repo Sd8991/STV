@@ -18,8 +18,7 @@ namespace STVRogue.GameLogic
         public uint M;
 		public int maxConnectivity = 4;
         public Dictionary<int, List<Node>> zone;
-
-		private Random r;
+        Random r;
 		
         /* To create a new dungeon with the specified difficult level and capacity multiplier */
         public Dungeon(uint level, uint nodeCapacityMultiplier)
@@ -27,7 +26,7 @@ namespace STVRogue.GameLogic
             Logger.log($"Creating a dungeon of difficulty level {level}, node capacity multiplier {nodeCapacityMultiplier}.");
             difficultyLevel = level;
             M = nodeCapacityMultiplier;
-			r = new Random();
+            r = RandomGenerator.rnd;
 			bool ValidGraph = false;
 			while (!ValidGraph)
 			{
@@ -296,7 +295,7 @@ namespace STVRogue.GameLogic
 
     public class Node
     {
-        public Random rnd = new Random();
+        public Random rnd = RandomGenerator.rnd;
         public String id;
         public List<Node> neighbors = new List<Node>();
         public List<Pack> packs = new List<Pack>();
