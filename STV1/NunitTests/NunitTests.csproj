@@ -67,9 +67,21 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MSunitTests\MSunitTests.csproj">
+      <Project>{1b7df0aa-a6bf-41ab-9483-c3151c7068fe}</Project>
+      <Name>MSunitTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\STVRogue\STVRogue.csproj">
       <Project>{8342123c-972a-4273-a3af-94a12674445b}</Project>
       <Name>STVRogue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\STVRogue_Main\STVRogue_Main.csproj">
+      <Project>{c90736af-02c9-483e-8d05-b66f233d4ac5}</Project>
+      <Name>STVRogue_Main</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XunitTests\XunitTests.csproj">
+      <Project>{c6fd4179-ac40-44c0-90ef-85978ea63212}</Project>
+      <Name>XunitTests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MSTest_Node.cs" />
     <Compile Include="MSTest_Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MSTest_Predicates.cs" />
@@ -62,6 +63,14 @@
     <ProjectReference Include="..\STVRogue\STVRogue.csproj">
       <Project>{8342123c-972a-4273-a3af-94a12674445b}</Project>
       <Name>STVRogue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\STVRogue_Main\STVRogue_Main.csproj">
+      <Project>{c90736af-02c9-483e-8d05-b66f233d4ac5}</Project>
+      <Name>STVRogue_Main</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XunitTests\XunitTests.csproj">
+      <Project>{c6fd4179-ac40-44c0-90ef-85978ea63212}</Project>
+      <Name>XunitTests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
