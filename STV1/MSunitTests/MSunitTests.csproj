@@ -61,8 +61,8 @@
     <Compile Include="MSTest_Predicates.cs" />
     <Compile Include="MTTest_Node.cs" />
     <Compile Include="MSTest_Bridge.cs" />
-    <Compile Include="MSTest_Items.cs" />
     <Compile Include="MSTest_Pack.cs" />
+    <Compile Include="MSTest_Items.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\STVRogue\STVRogue.csproj">
