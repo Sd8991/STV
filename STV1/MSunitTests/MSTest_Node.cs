@@ -20,8 +20,8 @@ namespace STVRogue.GameLogic
         [TestMethod]
         public void MSTest_connect_nodes()
         {
-            Node baseNode = new Node();
-            Node nbNode = new Node();
+            Node baseNode = new Node("baseNode");
+            Node nbNode = new Node("nbNode");
             baseNode.connect(nbNode);
             Assert.IsTrue(baseNode.neighbors.Contains(nbNode) && nbNode.neighbors.Contains(baseNode));
         }

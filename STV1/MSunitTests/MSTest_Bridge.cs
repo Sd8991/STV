@@ -31,7 +31,7 @@ namespace STVRogue.GameLogic
             Bridge bridge = new Bridge("bridgeID");
             Node node1 = new Node("node1");
             bridge.connectToNodeOfNextZone(node1);
-            Assert.IsTrue(bridge.neighbors.Contains(node1));
+            Assert.IsTrue(bridge.neighbors.Contains(node1)); 
         }
     }
 }
