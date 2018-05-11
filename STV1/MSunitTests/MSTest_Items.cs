@@ -15,16 +15,16 @@ namespace STVRogue.GameLogic
             Assert.IsTrue(potion.id == "potID");
         }
 
-        /*[TestMethod]
+        [TestMethod]
         public void MStest_healing()
         {
             Player P = new Player();
-            Item x = new HealingPotion("pot1");
+            HealingPotion x = new HealingPotion("pot1");
             P.HP = 50;
             P.bag.Add(x);
             P.use(x);
             Assert.IsTrue(P.HP == 50 + x.HPvalue);      //Can't call x.HPvalue
-        }*/
+        }
 
         [TestMethod]
         public void MStest_excessive_healing()
