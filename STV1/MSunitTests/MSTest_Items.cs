@@ -4,13 +4,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace STVRogue.GameLogic
 {
     [TestClass]
-    public class MSTe
+    public class MSTest_Items
     {
         [TestMethod]
         public void MStest_create_hppotion()
         {
             Item potion = new HealingPotion("potID");
-            Assert.IsInstanceOfType(potion.GetType(), typeof(HealingPotion));
+            //Assert.IsInstanceOfType(potion.GetType(), HealingPotion);
             Assert.IsNotNull(potion);
             Assert.IsTrue(potion.id == "potID");
         }
@@ -41,7 +41,7 @@ namespace STVRogue.GameLogic
         public void MStest_create_crystal()
         {
             Item crystal = new Crystal("crystID");
-            Assert.IsInstanceOfType(crystal.GetType(), typeof(Crystal));
+            //Assert.IsInstanceOfType(crystal.GetType(), typeof(Crystal));
             Assert.IsNotNull(crystal);
             Assert.IsTrue(crystal.id == "crystID");
         }

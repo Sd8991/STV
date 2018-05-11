@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace STVRogue.GameLogic
 {
     [TestClass]
-    public class UnitTest1
+    public class MSTest_Pack
     {
         [TestMethod]
         public void MStest_create_pack()
