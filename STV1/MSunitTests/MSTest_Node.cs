@@ -11,6 +11,13 @@ namespace STVRogue.GameLogic
     class MSTest_Node
     {
         [TestMethod]
+        public void MSTest_create_node_with_id()
+        {
+            Node node = new Node("nodeID");
+            Assert.IsTrue(node.id == "nodeID");
+        }
+
+        [TestMethod]
         public void MSTest_connect_nodes()
         {
             Node baseNode = new Node();

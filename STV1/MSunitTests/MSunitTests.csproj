@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MSTest_Bridge.cs" />
     <Compile Include="MSTest_Node.cs" />
     <Compile Include="MSTest_Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
