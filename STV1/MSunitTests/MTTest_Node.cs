@@ -1,14 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace STVRogue.GameLogic
 {
     [TestClass]
-    class MSTest_Node
+    public class MTTest_Node
     {
         [TestMethod]
         public void MSTest_create_node_with_id()
@@ -43,8 +39,8 @@ namespace STVRogue.GameLogic
             Player P = new Player();
             Pack pack = new Pack("pack", 2);
             Node N = new Node();
+            N.packs.Add(pack);
             P.location = N;
-            pack.location = N;
             Assert.IsTrue(N.contested(P));
         }
 

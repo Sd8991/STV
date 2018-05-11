@@ -1,14 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace STVRogue.GameLogic
 {
     [TestClass]
-    class MSTest_Bridge
+    public class MSTest_Bridge
     {
         [TestMethod]
         public void MSTest_create_bridge()
@@ -18,6 +14,7 @@ namespace STVRogue.GameLogic
             Assert.IsTrue(bridge.id == "bridgeID");
         }
 
+        [TestMethod]
         public void MSTest_connect_to_same_zone()
         {
             Bridge bridge = new Bridge("bridgeID");
@@ -26,12 +23,13 @@ namespace STVRogue.GameLogic
             Assert.IsTrue(bridge.GetFromNodes.Contains(node1));
         }
 
+        [TestMethod]
         public void MSTest_connect_to_next_zone()
         {
             Bridge bridge = new Bridge("bridgeID");
             Node node1 = new Node("node1");
             bridge.connectToNodeOfNextZone(node1);
-            Assert.IsTrue(bridge.neighbors.Contains(node1)); 
+            Assert.IsTrue(bridge.neighbors.Contains(node1));
         }
     }
 }
