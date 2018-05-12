@@ -12,7 +12,7 @@ namespace STVRogue.GameLogic
     public class MSTest_Player
     {
         [TestMethod]
-        public void MStest_create_player()
+        public void MSTest_create_player()
         {
             Player P = new Player();
             Assert.IsTrue(P.id == "player");
@@ -26,6 +26,18 @@ namespace STVRogue.GameLogic
         {
             Player P = new Player();
             P.use(new Item());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void MSTest_using_used_item()
+        {
+            Player P = new Player();
+            P.HP = 50;
+            Item x = new HealingPotion("pot1");
+            P.bag.Add(x);
+            P.use(x);
+            P.use(x);
         }
 
         [TestMethod]
@@ -50,13 +62,14 @@ namespace STVRogue.GameLogic
         }
 
         [TestMethod]
-        public void MSTest_test_base_creature_attack()
+        public void MSTest_test_base_creature_attack_surviving_enemy()
         {
             Player P = new Player();
-            Creature M = new Monster("orc1");
-            int preHP = M.HP;
-            P.Attack(M);
-            Assert.IsTrue(M.HP < preHP);
+            Pack pack = new Pack("pack", 1);
+            pack.members[0].HP = 7;
+            int preHP = pack.members[0].HP;
+            P.Attack(pack.members[0]);
+            Assert.IsTrue(pack.members[0].HP < preHP);
         }
 
         [TestMethod]
@@ -64,7 +77,7 @@ namespace STVRogue.GameLogic
         public void MSTest_attack_non_foe()
         {
             Player P = new Player();
-            Creature M = new Player();
+            Creature M = new Creature();
             P.Attack(M);
         }
 
@@ -84,17 +97,43 @@ namespace STVRogue.GameLogic
         public void MSTest_check_dead_monsters()
         {
             Player P = new Player();
-            Pack pack = new Pack("pack", 4);
-            pack.members[1].HP = 1;
-            pack.members[2].HP = 1;
-            pack.members[3].HP = 7;
-            Monster M1 = pack.members[1];
-            Monster M2 = pack.members[2];
-            Monster M3 = pack.members[3];
+            Pack pack = new Pack("pack", 2);
+            pack.members[0].HP = 1;
+            pack.members[1].HP = 7;
+            Monster M1 = pack.members[0];
+            Monster M2 = pack.members[1];
             P.accelerated = true;
             P.Attack(pack.members[0]);
-            Assert.IsTrue(pack.members.Contains(M3));
-            Assert.IsFalse(pack.members.Contains(M1) && pack.members.Contains(M2));
+            Assert.IsTrue(pack.members.Contains(M2) && M2.HP > 0);
+            Assert.IsFalse(pack.members.Contains(M1) && M1.HP == 0);
+        }
+
+        [TestMethod]
+        public void MSTest_check_dead_monsters_no_deaths()
+        {
+            Player P = new Player();
+            Pack pack = new Pack("pack", 2);
+            pack.members[0].HP = 7;
+            pack.members[1].HP = 7;
+            Monster M1 = pack.members[0];
+            Monster M2 = pack.members[1];
+            P.accelerated = true;
+            P.Attack(pack.members[0]);
+            Assert.IsTrue(pack.members.Contains(M1) && pack.members.Contains(M2));
+        }
+
+        [TestMethod]
+        public void MSTest_check_dead_monsters_all_dead()
+        {
+            Player P = new Player();
+            Pack pack = new Pack("pack", 2);
+            pack.members[0].HP = 1;
+            pack.members[1].HP = 1;
+            Monster M1 = pack.members[0];
+            Monster M2 = pack.members[1];
+            P.accelerated = true;
+            P.Attack(pack.members[0]);
+            Assert.IsTrue(pack.CurrentHP() == 0);
         }
     }
 }

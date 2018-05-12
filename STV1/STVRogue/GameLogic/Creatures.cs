@@ -28,8 +28,9 @@ namespace STVRogue.GameLogic
         public Pack pack;
 
         /* Create a monster with a random HP */
-        public Monster(String id)
+        public Monster(String id, Pack pack)
         {
+            this.pack = pack;
             this.id = id; name = "Orc";
             HP = 1 + RandomGenerator.rnd.Next(6);
         }
@@ -79,7 +80,7 @@ namespace STVRogue.GameLogic
                 {
                     base.Attack(target);
                     if (target.HP <= 0)
-                        deadFoes.Add(foe_);
+                        deadFoes.Add(target);
                 }
                 foreach (Monster deadFoe in deadFoes)
                 {

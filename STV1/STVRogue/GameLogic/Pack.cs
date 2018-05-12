@@ -20,7 +20,7 @@ namespace STVRogue.GameLogic
             this.id = id;
             for (int i = 0; i < n; i++)
             {
-                Monster m = new Monster("" + id + "_" + i);
+                Monster m = new Monster("" + id + "_" + i, this);
                 members.Add(m);
                 startingHP += m.HP;
             }
