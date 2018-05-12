@@ -34,6 +34,14 @@ namespace STVRogue.GameLogic
         }
 
         [TestMethod]
+        public void MSTest_disconnect_not_connected_nodes()
+        {
+            Node node1 = new Node();
+            Node node2 = new Node();
+            node1.disconnect(node2);
+        }
+
+        [TestMethod]
         public void MSTest_contested_node()
         {
             Player P = new Player();
