@@ -19,7 +19,9 @@ namespace STVRogue.GameLogic
 		public int maxConnectivity = 4;
         public Dictionary<int, List<Node>> zone;
         Random r;
-		
+
+        public Dungeon() { }
+
         /* To create a new dungeon with the specified difficult level and capacity multiplier */
         public Dungeon(uint level, uint nodeCapacityMultiplier)
         {
@@ -54,7 +56,7 @@ namespace STVRogue.GameLogic
 
 		#region DungeonGraph generation
 		//builds the dungeon graph by greating subgraphs between the nodes in de brdiges array (which include the start- and exitNode)
-		private void GenerateDungeonGraph(Node[] bridges)
+		public void GenerateDungeonGraph(Node[] bridges)
 		{
 			int l = bridges.Length;
 			if(l < 2) //sanity check, need atleast 2 nodes to make a valid graph
@@ -70,7 +72,7 @@ namespace STVRogue.GameLogic
 		}
 
 		//generate a fully connected subgraph
-		private void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 1, int maxNodes = 10)
+		public void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 1, int maxNodes = 10)
 		{
 			//sanity checks
 			if(minNodes < 1)
@@ -101,7 +103,7 @@ namespace STVRogue.GameLogic
             thisZone.Add(endNode);
 		}
 
-		private void connectToRandomNodes(Node thisNode, Node[] toNodes, bool sameZone)
+		public void connectToRandomNodes(Node thisNode, Node[] toNodes, bool sameZone)
 		{
 			List<Node> validnodes = new List<Node>();	//only use nodes that can still get more connections	
 			foreach (Node n in toNodes)
@@ -126,7 +128,7 @@ namespace STVRogue.GameLogic
 			}
 		}
 
-		private Node randomConnection(Node thisNode, List<Node> toNodes, bool sameZone)
+		public Node randomConnection(Node thisNode, List<Node> toNodes, bool sameZone)
 		{
 			int l = toNodes.Count;
 			if(l == 0)
@@ -162,7 +164,7 @@ namespace STVRogue.GameLogic
 		}
 
 		// connects the correct side of the bridge to a given node
-		private void connectBridge(Bridge thisBrige, Node toNode, bool sameZone)
+		public void connectBridge(Bridge thisBrige, Node toNode, bool sameZone)
 		{
 			if(sameZone)
 				thisBrige.connectToNodeOfSameZone(toNode);
@@ -295,14 +297,18 @@ namespace STVRogue.GameLogic
 
     public class Node
     {
-        public Random rnd = RandomGenerator.rnd;
+        public Random rnd;
         public String id;
+        public int seed;
+        public bool withSeed;
         public List<Node> neighbors = new List<Node>();
         public List<Pack> packs = new List<Pack>();
         public List<Item> items = new List<Item>();
 
         public Node() { }
         public Node(String id) { this.id = id; }
+
+        public Node(int seed) { this.seed = seed; withSeed = true; }
 
         /* To connect this node to another node. */
         public void connect(Node nd)
@@ -326,20 +332,25 @@ namespace STVRogue.GameLogic
          * A fight terminates when either the node has no more monster-pack, or when
          * the player's HP is reduced to 0. 
          */
-        public void fight(Player player)
+        public void fight(Player player, int seed, bool withSeed)
         {
+            if (withSeed) RandomGenerator.initializeWithSeed(seed);
+            rnd = RandomGenerator.rnd;
             /*Possibly to do:
              - Attack after failed flee attempt? (currently present)*/
             //throw new NotImplementedException(); //still missing node contest check
             while (contested(player))
             {                
-                Pack targetPack = packs[rnd.Next(packs.Count - 1)];
-                Monster targetMon = targetPack.members[rnd.Next(targetPack.members.Count - 1)];
+                Pack targetPack = packs[rnd.Next(packs.Count)];
+                Monster targetMon = (targetPack.members.Count > 1) ? targetPack.members[rnd.Next(1, targetPack.members.Count) - 1] : targetPack.members[0];
                 player.Attack(targetMon);
-                if (targetPack.members == null) packs.Remove(targetPack);
+                if (targetPack.members.Count == 0) packs.Remove(targetPack);
+                if (!contested(player)) break;
                 Pack attackPack = packs[rnd.Next(packs.Count - 1)];
                 double fleeCheck = rnd.NextDouble();
-                if (fleeCheck <= (1 - attackPack.CurrentHP() / attackPack.startingHP) / 2)
+                double packHP = attackPack.CurrentHP();
+                double fleeTreshold = (1 - (packHP / attackPack.startingHP)) / 2;
+                if (fleeCheck <= fleeTreshold)
                 {
                     Logger.log("A pack tries to flee");
                     foreach (Node n in attackPack.location.neighbors)
