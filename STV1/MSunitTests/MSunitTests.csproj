@@ -63,6 +63,7 @@
     <Compile Include="MSTest_Bridge.cs" />
     <Compile Include="MSTest_Pack.cs" />
     <Compile Include="MSTest_Items.cs" />
+    <Compile Include="MSTest_Dungeon.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\STVRogue\STVRogue.csproj">
