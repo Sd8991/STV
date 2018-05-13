@@ -22,6 +22,24 @@ namespace STVRogue.GameLogic
 
         public Dungeon() { }
 
+        // To create a consistent dummy dungeon to test Pack movement on
+        public Dungeon(uint M)
+        {
+            this.M = M;
+            Node N0 = new Node("N0");
+            Node N1 = new Node("N1");
+            Node N2 = new Node("N2");          
+            N0.connect(N1);
+            N0.connect(N2);
+            N1.connect(N2);
+            List<Node> nodes = new List<Node>();
+            nodes.Add(N0);
+            nodes.Add(N1);
+            nodes.Add(N2);
+            zone = new Dictionary<int, List<Node>>();
+            zone.Add(1, nodes);
+        }
+
         /* To create a new dungeon with the specified difficult level and capacity multiplier */
         public Dungeon(uint level, uint nodeCapacityMultiplier)
         {

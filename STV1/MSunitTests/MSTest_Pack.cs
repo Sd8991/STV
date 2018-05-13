@@ -17,30 +17,29 @@ namespace STVRogue.GameLogic
         [TestMethod]
         public void MStest_move_when_able()
         {
-            Node N0 = new Node("N0");
-            Node N1 = new Node("N1");
-            N0.connect(N1);
+            Dungeon d = new Dungeon(5);
             Pack p = new Pack("pid", 3);
-            p.location = N0;
-            N0.packs.Add(p);
-            //p.move(N1);          //not sure on how to create a set instance of Dungeon to test on, as Pack.move() requires one to exist
-            Assert.IsTrue(p.location == N1);
+            p.dungeon = d;
+            p.location = d.zone[1][0];
+            d.zone[1][0].packs.Add(p);
+            p.move(d.zone[1][1]);
+            Assert.IsTrue(p.location == d.zone[1][1]);
         }
 
         [TestMethod]
         public void MStest_move_with_insufficient_capacity()
         {
-            Node N0 = new Node("N0");
-            Node N1 = new Node("N1");
-            N0.connect(N1);
+            Dungeon d = new Dungeon(5);
             Pack p = new Pack("pid", 3);
-            //Pack q = new Pack("qid", (int) (dungeon.M * (dungeon.level(N1) + 1));     //Set Dungeon Issue
-            p.location = N0;
-            //q.location = N1;      //Set Dungeon Issue
-            N0.packs.Add(p);
-            //N1.packs.Add(q);      //Set Dungeon Issue
-            //p.move(N1);           //Set Dungeon Issue
-            Assert.IsTrue(p.location == N1);
+            Pack q = new Pack("qid", (d.M * (d.level(d.zone[1][1]) + 1)));
+            p.dungeon = d;
+            q.dungeon = d;    
+            p.location = d.zone[1][0];
+            q.location = d.zone[1][1];
+            d.zone[1][0].packs.Add(p);
+            d.zone[1][1].packs.Add(q);     
+            p.move(d.zone[1][1]);
+            Assert.IsTrue(p.location == d.zone[1][0]);
         }
 
         [TestMethod]
@@ -52,29 +51,21 @@ namespace STVRogue.GameLogic
             Pack p = new Pack("pid", 3);
             p.location = N0;
             N0.packs.Add(p);
-            //p.move(N1);           //Set Dungeon Issue
+            p.move(N1);
         }
 
 
         [TestMethod]
         public void MStest_follow_shortest_path()
         {
-            Node N0 = new Node("N0");
-            Node N1 = new Node("N1");
-            Node N2 = new Node("N2");
-            Node N3 = new Node("N3");
-            Node N4 = new Node("N4");
-            N0.connect(N1);
-            N0.connect(N3);
-            N1.connect(N2);
-            N2.connect(N4);
-            N3.connect(N4);
-
+            Dungeon d = new Dungeon(5);
+            
             Pack p = new Pack("pid", 3);
-            p.location = N0;
-            N0.packs.Add(p);
-            //p.moveTowards(N4);      //Set Dungeon Issue
-            Assert.IsTrue(p.location == N3);
+            p.dungeon = d;
+            p.location = d.zone[1][0];
+            d.zone[1][0].packs.Add(p);
+            p.moveTowards(d.zone[1][2]);      
+            Assert.IsTrue(p.location == d.zone[1][2]);
         }
 
         [TestMethod]
