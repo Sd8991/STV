@@ -8,19 +8,27 @@ using STVRogue.Utils;
 
 namespace STVRogue.GameLogic
 {
-    public class Dungeon
-    {
-        public Node startNode;
-        public Node exitNode;
+	public class Dungeon
+	{
+		public Node startNode;
+		public Node exitNode;
 		public Predicates predicates = new Predicates();
-        public uint difficultyLevel;
-        /* a constant multiplier that determines the maximum number of monster-packs per node: */
-        public uint M;
+		public uint difficultyLevel;
+		/* a constant multiplier that determines the maximum number of monster-packs per node: */
+		public uint M;
 		public int maxConnectivity = 4;
-        public Dictionary<int, List<Node>> zone;
-        Random r;
+		public Dictionary<int, List<Node>> zone;
+		Random r;
 
-        public Dungeon() { }
+		/// <summary>
+		/// empty constructor for testing lose methods
+		/// </summary>
+		public Dungeon()
+		{
+			RandomGenerator.initializeWithSeed(1);
+			r = RandomGenerator.rnd;
+			zone = new Dictionary<int, List<Node>>();
+		}
 
         // To create a consistent dummy dungeon to test Pack movement on
         public Dungeon(uint M)
@@ -47,14 +55,15 @@ namespace STVRogue.GameLogic
             difficultyLevel = level;
             M = nodeCapacityMultiplier;
             r = RandomGenerator.rnd;
+            int seed = (int)level;
 			bool ValidGraph = false;
 			while (!ValidGraph)
 			{
-                zone = new Dictionary<int, List<Node>>();
+				zone = new Dictionary<int, List<Node>>();
 				startNode = new Node("startNode");
-				exitNode  = new Node("exitNode");
+				exitNode = new Node("exitNode");
 
-				Node[] bridges = new Node[level+2];
+				Node[] bridges = new Node[level + 2];
 				bridges[0] = startNode;
 				for (int i = 1; i <= level; i++)
 				{
@@ -63,48 +72,53 @@ namespace STVRogue.GameLogic
 				bridges[level + 1] = exitNode;
 
 				GenerateDungeonGraph(bridges);
-                zone[1].Add(startNode);
-				ValidGraph = predicates.isValidDungeon(startNode,exitNode,difficultyLevel);
-				if(ValidGraph)
+				zone[1].Add(startNode);
+				ValidGraph = true; //predicates.isValidDungeon(startNode,exitNode,difficultyLevel);
+				if (ValidGraph)
 					Logger.log("Valid dungeonGraph");
 				else
+				{
 					Logger.log("Invalid dungeonGraph");
+					RandomGenerator.initializeWithSeed(seed);
+					r = RandomGenerator.rnd;
+					seed++;
+				}
 			}
-        }
+		}
 
 		#region DungeonGraph generation
 		//builds the dungeon graph by greating subgraphs between the nodes in de brdiges array (which include the start- and exitNode)
 		public void GenerateDungeonGraph(Node[] bridges)
 		{
 			int l = bridges.Length;
-			if(l < 2) //sanity check, need atleast 2 nodes to make a valid graph
+			if (l < 2) //sanity check, need atleast 2 nodes to make a valid graph
 				throw new Exception("the given Node[] bridges is to short, needs to contain atleast 2 nodes");
 
 			for (int i = 1; i < l; i++)
 			{
-				GenerateSubGraph(bridges[i-1],bridges[i], i);
+				GenerateSubGraph(bridges[i - 1], bridges[i], i);
 			}
-			
+
 			//TODO: populate dungeon with monsters/packs
 			//TODO: populate dungeon with items
 		}
 
 		//generate a fully connected subgraph
-		public void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 1, int maxNodes = 10)
+		public void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 2, int maxNodes = 10)
 		{
 			//sanity checks
-			if(minNodes < 1)
-				throw new Exception("minimum amount of nodes needs to be atleast 1");
-			if(minNodes > maxNodes)
-				throw new Exception("minNodes ("+minNodes+") can't be larger than maxNodes ("+maxNodes+")");
+			if (minNodes < 2)
+				throw new Exception("minimum amount of nodes needs to be atleast 2");
+			if (minNodes > maxNodes)
+				throw new Exception("minNodes (" + minNodes + ") can't be larger than maxNodes (" + maxNodes + ")");
 
 
-			int n = r.Next(minNodes,maxNodes);
+			int n = r.Next(minNodes, maxNodes);
 			Node[] newNodes = new Node[n];
 			Node[] connectedNodes = new Node[n];
 			for (int i = 0; i < n; i++)
 			{
-				newNodes[i] = new Node();//TODO: define ID generation
+				newNodes[i] = new Node("n-"+level+"."+i);//TODO: define ID generation
 			}
 
 			//connect the next new node to the already connected nodes (to guarrantee that the graph is full connected)
@@ -113,19 +127,75 @@ namespace STVRogue.GameLogic
 				connectToRandomNodes(newNodes[i], connectedNodes, true);
 				connectedNodes[i] = newNodes[i];
 			}
-			
+
 			//connect the start and exit node of this subgraph
 			connectToRandomNodes(entryNode, connectedNodes, false);
 			connectToRandomNodes(endNode, connectedNodes, true);
-            List<Node> thisZone = connectedNodes.ToList<Node>();
-            thisZone.Add(endNode);
+			List<Node> thisZone = new List<Node>();
+			for (int i = 0; i < connectedNodes.Length; i++)
+			{
+				thisZone.Add(connectedNodes[i]);
+			}
+			thisZone.Add(endNode);
+			zone.Add(level, thisZone);
+
+			correctBridgesSubGraph(entryNode, endNode, connectedNodes);
+			//TODO: check for subgraph bridges
 		}
+
+		public void correctBridgesSubGraph(Node startnode, Node endnode, Node[] subgraph)
+		{
+			Predicates p = new Predicates();
+			Node[] local = new Node[subgraph.Length + 2];
+			for (int i = 0; i < subgraph.Length; i++)
+			{
+				local[i] = subgraph[i];
+			}
+			local[subgraph.Length] = startnode;
+			local[subgraph.Length + 1] = endnode;
+
+			for (int i = 0; i < local.Length; i++)
+			{
+				if(p.isBridge(startnode,endnode, local[i]))
+				{
+					List<Node> around = local[i].neighbors;
+					foreach (Node a in around)
+						a.neighbors.Remove(local[i]);
+					bool solved = false;
+					for (int j = 0; j < around.Count; j++)
+					{
+						if (solved)
+							break;
+						if (around[j].neighbors.Count >= 3)
+							continue;
+						for (int k = around.Count-1; k >= j; k--)
+						{
+							if (around[k].neighbors.Count >= 3)
+								continue;
+							if (!p.isReachable(around[j], around[k]))
+							{
+								around[j].connect(around[k]);
+								solved = true;
+								break;
+							}
+						}
+					}
+					if (!solved)
+						throw new GameCreationException("could not fix a bridge in an subgraph");
+					foreach (Node a in around)
+						a.neighbors.Add(local[i]);
+				}
+			}
+		}
+		
 
 		public void connectToRandomNodes(Node thisNode, Node[] toNodes, bool sameZone)
 		{
 			List<Node> validnodes = new List<Node>();	//only use nodes that can still get more connections	
 			foreach (Node n in toNodes)
 			{
+				if (n == null)
+					continue;
 				if(n.neighbors.Count < 4)
 					validnodes.Add(n);//only use nodes that can make a new connection
 			}
@@ -169,7 +239,7 @@ namespace STVRogue.GameLogic
 			{
 				index = r.Next(l - 1);
 				if(toNodes[index].neighbors.Count >=maxConnectivity)
-					throw new Exception("toNodes contained a node whit atleast maxconnectivity neighbors");
+					throw new Exception("toNodes contained a node with atleast maxconnectivity neighbors");
 			}
 
 			//if thisNode is a bridge, connect to the correct side, else use normal connect
@@ -223,7 +293,7 @@ namespace STVRogue.GameLogic
 			throw new Exception("no path found");//TODO: decide whether "no path" is a valid outcome
 		}
 
-		private List<Node> constructPath(Node target, Dictionary<Node,Node> meta)
+		public List<Node> constructPath(Node target, Dictionary<Node,Node> meta)
 		{
 			List<Node> path = new List<Node>();
 			while(true)
@@ -394,7 +464,8 @@ namespace STVRogue.GameLogic
         List<Node> fromNodes = new List<Node>();
 		public List<Node> GetFromNodes {get {return fromNodes;}}
         List<Node> toNodes = new List<Node>();
-        public Bridge(String id) : base(id) { }
+		public List<Node> GetToNodes { get { return toNodes; } }
+		public Bridge(String id) : base(id) { }
 
         /* Use this to connect the bridge to a node from the same zone. */
         public void connectToNodeOfSameZone(Node nd)
