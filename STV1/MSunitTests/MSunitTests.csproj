@@ -59,7 +59,7 @@
     <Compile Include="MSTest_Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MSTest_Predicates.cs" />
-    <Compile Include="MTTest_Node.cs" />
+    <Compile Include="MSTest_Node.cs" />
     <Compile Include="MSTest_Bridge.cs" />
     <Compile Include="MSTest_Pack.cs" />
     <Compile Include="MSTest_Items.cs" />
