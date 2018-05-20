@@ -20,6 +20,7 @@ namespace STVRogue.GameLogic
 		public Dictionary<int, List<Node>> zone;
 		Random r;
 
+
 		/// <summary>
 		/// empty constructor for testing lose methods
 		/// </summary>

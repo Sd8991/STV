@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace STVRogue.GameLogic
 {
+
     [TestClass]
     public class MSTest_Pack
     {
