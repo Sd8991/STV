@@ -34,7 +34,7 @@ namespace STVRogue.GameLogic
 				Assert.IsFalse(!(nd is Bridge) && isBridge_);
 			}
 			float avrgConnectivity = (float)totalConnectivityDegree / (float)nodes.Count;
-			Assert.IsTrue(avrgConnectivity > 3);
+			Assert.IsTrue(avrgConnectivity > 3,"avrage: " + avrgConnectivity);
 
 			//Assert.IsTrue(p.isValidDungeon(d.startNode, d.exitNode, 1));
 		}
@@ -102,68 +102,12 @@ namespace STVRogue.GameLogic
 			Assert.IsTrue(exitnode.neighbors.Count == 2 && exitnode.neighbors.Contains(entrynode) == false);
 			List<Node> nodes1 = entrynode.neighbors[0].neighbors;
 			List<Node> nodes2 = entrynode.neighbors[1].neighbors;
-			Assert.IsTrue(nodes1.Count == 3 && nodes1.Contains(entrynode) && nodes1.Contains(exitnode));
-			Assert.IsTrue(nodes2.Count == 3 && nodes2.Contains(entrynode) && nodes2.Contains(exitnode));
+			Assert.IsTrue(nodes1.Count >= 2 && nodes1.Contains(entrynode) && nodes1.Contains(exitnode), $"count {nodes1.Count}, {nodes1.Contains(entrynode)}, {nodes1.Contains(exitnode)}");
+			Assert.IsTrue(nodes2.Count >= 2 && nodes2.Contains(entrynode) && nodes2.Contains(exitnode));
 			List<Node> nodes3 = exitnode.neighbors[0].neighbors;
 			List<Node> nodes4 = exitnode.neighbors[1].neighbors;
-			Assert.IsTrue(nodes3.Count == 3 && nodes3.Contains(entrynode) && nodes3.Contains(exitnode));
-			Assert.IsTrue(nodes4.Count == 3 && nodes4.Contains(entrynode) && nodes4.Contains(exitnode));
-		}
-		#endregion
-
-		#region ConnectToRandomNodes() tests
-		[TestMethod]
-		public void MSTest_no_valid_nodes()
-		{
-			List<Node> graph = new List<Node>();
-			for (int i = 0; i < 5; i++)
-			{
-				Node neighbor = new Node("neighbor " + i);
-				for (int j = 0; j < graph.Count; j++)
-				{
-					neighbor.connect(graph[j]);
-				}
-				graph.Add(neighbor);
-			}
-			Node[] toNodes = new Node[graph.Count];
-			for (int i = 0; i < graph.Count; i++)
-			{
-				toNodes[i] = graph[i];
-			}
-			Node thisnode = new Node();
-			Dungeon d = new Dungeon();
-			d.connectToRandomNodes(thisnode, toNodes, true);
-			Assert.IsTrue(thisnode.neighbors.Count == 0);
-		}
-		[TestMethod]
-		public void MSTest_no_tonodes()
-		{
-			Node[] toNodes = new Node[3];
-			Node thisnode = new Node();
-			Dungeon d = new Dungeon();
-			d.connectToRandomNodes(thisnode, toNodes, true);
-			Assert.IsTrue(thisnode.neighbors.Count == 0);
-		}
-		[TestMethod]
-		public void MSTest_half_filled_tonodes()
-		{
-			Node[] toNodes = new Node[4];
-			toNodes[0] = new Node();
-			toNodes[3] = new Node();
-			Node thisnode = new Node();
-			Dungeon d = new Dungeon();
-			d.connectToRandomNodes(thisnode, toNodes, true);
-			Assert.IsTrue(thisnode.neighbors.Count >= 1 && thisnode.neighbors.Count <= 2);
-		}
-		[TestMethod]
-		public void MSTest_single_valid_node()
-		{
-			Node[] toNodes = new Node[1];
-			toNodes[0] = new Node();
-			Node thisnode = new Node();
-			Dungeon d = new Dungeon();
-			d.connectToRandomNodes(thisnode, toNodes, true);
-			Assert.IsTrue(thisnode.neighbors.Count == 1);
+			Assert.IsTrue(nodes3.Count >= 2 && nodes3.Contains(entrynode) && nodes3.Contains(exitnode));
+			Assert.IsTrue(nodes4.Count >= 2 && nodes4.Contains(entrynode) && nodes4.Contains(exitnode));
 		}
 		#endregion
 
@@ -172,69 +116,71 @@ namespace STVRogue.GameLogic
 		public void MSTest_RandomConnection_to_empty_graph()
 		{
 			Node node = new Node();
-			List<Node> emptygraph = new List<Node>();
+			Node[] emptygraph = new Node[0];
 			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(node, emptygraph, true);
-			Assert.IsNull(result);
+			d.randomConnection(node, emptygraph);
+			Assert.IsTrue(node.neighbors.Count == 0);
 		}
 
 		[TestMethod]
 		public void MSTest_RandomConnection_thisnode_max_neighbors()
 		{
 			Node maxConnectionNode = new Node("maxConnectionNode");
-			List<Node> graph = new List<Node>();
+			Node[] graph = new Node[5];
 			Node graphnode = new Node();
-			graph.Add(graphnode);
+			graph[4] = graphnode;
 			for (int i = 0; i < 4; i++)
 			{
 				Node neighbor = new Node("neighbor " + i);
 				maxConnectionNode.connect(neighbor);
 			}
 			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(maxConnectionNode, graph, true);
-			Assert.IsNull(result);
+			d.randomConnection(maxConnectionNode, graph);
+			Assert.IsTrue(maxConnectionNode.neighbors.Count == 4);
 		}
 
 		[TestMethod]
 		public void MSTest_RandomConnection_Connect_to_same_node()
 		{
 			Node thisnode = new Node();
-			List<Node> graph = new List<Node>();
-			graph.Add(thisnode);
+			Node[] graph = new Node[1];
+			graph[0] = thisnode;
 			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(thisnode, graph, true);
-			Assert.IsNull(result);
+			d.randomConnection(thisnode, graph);
+			Assert.IsFalse(thisnode.neighbors.Contains(thisnode));
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(Exception))]
 		public void MSTest_RandomConnection_randomnode_max_neighbors()
 		{
-			List<Node> graph = new List<Node>();
+			Node[] graph = new Node[5];
 			for (int i = 0; i < 5; i++)
 			{
-				Node neighbor = new Node("neighbor " + i);
-				for (int j = 0; j < graph.Count; j++)
+				graph[i] = new Node("neighbor " + i);
+			}
+
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 4; j > i; j--)
 				{
-					neighbor.connect(graph[j]);
+					graph[i].connect(graph[j]);
 				}
-				graph.Add(neighbor);
 			}
 			Node testnode = new Node("test");
 			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(testnode, graph, true);
+			d.randomConnection(testnode, graph);
+			Assert.IsTrue(testnode.neighbors.Count == 0);
 		}
 
 		[TestMethod]
 		public void MSTest_RandomConnection_connect_single_node_graph()
 		{
 			Node thisnode = new Node();
-			List<Node> graph = new List<Node>();
-			graph.Add(thisnode);
+			Node[] graph = new Node[1];
+			graph[0] = thisnode;
 			Node testnode = new Node("test");
 			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(testnode, graph, true);
-			Assert.AreEqual(result, thisnode);
+			d.randomConnection(testnode, graph);
 			Assert.IsTrue(testnode.neighbors.Contains(thisnode) && thisnode.neighbors.Contains(testnode));
 		}
 
@@ -246,27 +192,16 @@ namespace STVRogue.GameLogic
 			Node node3 = new Node();
 			node2.connect(node1);
 			node2.connect(node3);
-			List<Node> graph = new List<Node>();
-			graph.Add(node1);
-			graph.Add(node2);
-			graph.Add(node3);
+			Node[] graph = new Node[3];
+			graph[0] = node1;
+			graph[1] = node2;
+			graph[2] = node3;
 			Node testnode = new Node("test");
 			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(testnode, graph, true);
-			Assert.IsTrue(testnode.neighbors.Contains(result) && result.neighbors.Contains(testnode));
-		}
-
-		[TestMethod]
-		public void MSTest_RandomConnection_connect_bridge_single_node_graph()
-		{
-			Node thisnode = new Node();
-			List<Node> graph = new List<Node>();
-			graph.Add(thisnode);
-			Bridge testnode = new Bridge("test");
-			Dungeon d = new Dungeon();
-			Node result = d.randomConnection(testnode, graph, true);
-			Assert.AreEqual(result, thisnode);
-			Assert.IsTrue(testnode.GetFromNodes.Contains(thisnode) && testnode.neighbors.Contains(thisnode) && thisnode.neighbors.Contains(testnode));
+			d.randomConnection(testnode, graph);
+			Assert.IsTrue(testnode.neighbors.Count == 1);
+			Node result = testnode.neighbors[0];
+			Assert.IsTrue(result.neighbors.Contains(testnode));
 		}
 		#endregion
 

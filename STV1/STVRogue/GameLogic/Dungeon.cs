@@ -105,151 +105,83 @@ namespace STVRogue.GameLogic
 		}
 
 		//generate a fully connected subgraph
-		public void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 2, int maxNodes = 10)
+		public void GenerateSubGraph(Node entryNode, Node endNode, int level, int minNodes = 2, int maxNodes = 20)
 		{
 			//sanity checks
 			if (minNodes < 2)
 				throw new Exception("minimum amount of nodes needs to be atleast 2");
 			if (minNodes > maxNodes)
 				throw new Exception("minNodes (" + minNodes + ") can't be larger than maxNodes (" + maxNodes + ")");
+			int min = Math.Max(1, minNodes / 2);
+			int max = Math.Max(min, maxNodes / 2);
 
+			int n1 = r.Next(min, max);
+			int n2 = r.Next(min, max);
 
-			int n = r.Next(minNodes, maxNodes);
-			Node[] newNodes = new Node[n];
-			Node[] connectedNodes = new Node[n];
-			for (int i = 0; i < n; i++)
+			Node[] path1 = genSubPath(n1, entryNode, endNode);
+			Node[] path2 = genSubPath(n2, entryNode, endNode);
+
+			Node[] subgraph = new Node[n1+n2];
+			Array.Copy(path1, subgraph, path1.Length);
+			Array.Copy(path2, 0, subgraph, path1.Length, path2.Length);
+			int total = 2 + n1 + n2;
+			float avr = (8 + n1 * 2 + n2 * 2) / total;
+
+			int additonalConnections = (int)((3.0f - avr) * total);
+
+			for (int i = 0; i < additonalConnections; i++)
 			{
-				newNodes[i] = new Node("n-"+level+"."+i);//TODO: define ID generation
+				int rc = r.Next(total - 2);
+				if (subgraph[rc].neighbors.Count < 4)
+					randomConnection(subgraph[rc], subgraph);
 			}
 
-			//connect the next new node to the already connected nodes (to guarrantee that the graph is full connected)
-			for (int i = 0; i < n; i++)
-			{
-				connectToRandomNodes(newNodes[i], connectedNodes, true);
-				connectedNodes[i] = newNodes[i];
-			}
-
-			//connect the start and exit node of this subgraph
-			connectToRandomNodes(entryNode, connectedNodes, false);
-			connectToRandomNodes(endNode, connectedNodes, true);
-			List<Node> thisZone = new List<Node>();
-			for (int i = 0; i < connectedNodes.Length; i++)
-			{
-				thisZone.Add(connectedNodes[i]);
-			}
-			thisZone.Add(endNode);
-			zone.Add(level, thisZone);
-
-			correctBridgesSubGraph(entryNode, endNode, connectedNodes);
-			//TODO: check for subgraph bridges
-		}
-
-		public void correctBridgesSubGraph(Node startnode, Node endnode, Node[] subgraph)
-		{
-			Predicates p = new Predicates();
-			Node[] local = new Node[subgraph.Length + 2];
+			zone[level] = new List<Node>();
 			for (int i = 0; i < subgraph.Length; i++)
 			{
-				local[i] = subgraph[i];
+				zone[level].Add(subgraph[i]);
 			}
-			local[subgraph.Length] = startnode;
-			local[subgraph.Length + 1] = endnode;
+			zone[level].Add(endNode);
+		}
 
-			for (int i = 0; i < local.Length; i++)
+		public Node[] genSubPath(int n,Node entryNode, Node endNode)
+		{
+			Node[] path = new Node[n];
+			path[0] = new Node();
+			for (int i = 1; i < n; i++)
 			{
-				if(p.isBridge(startnode,endnode, local[i]))
-				{
-					List<Node> around = local[i].neighbors;
-					foreach (Node a in around)
-						a.neighbors.Remove(local[i]);
-					bool solved = false;
-					for (int j = 0; j < around.Count; j++)
-					{
-						if (solved)
-							break;
-						if (around[j].neighbors.Count >= 3)
-							continue;
-						for (int k = around.Count-1; k >= j; k--)
-						{
-							if (around[k].neighbors.Count >= 3)
-								continue;
-							if (!p.isReachable(around[j], around[k]))
-							{
-								around[j].connect(around[k]);
-								solved = true;
-								break;
-							}
-						}
-					}
-					if (!solved)
-						throw new GameCreationException("could not fix a bridge in an subgraph");
-					foreach (Node a in around)
-						a.neighbors.Add(local[i]);
-				}
+				path[i] = new Node();
+				path[i].connect(path[i - 1]);
 			}
+
+			if (entryNode.GetType() == typeof(Bridge))
+				connectBridge((entryNode as Bridge), path[0], false);
+			else
+				entryNode.connect(path[0]);
+
+			if (endNode.GetType() == typeof(Bridge))
+				connectBridge((endNode as Bridge), path[n-1], true);
+			else
+				endNode.connect(path[n-1]);
+			return path;
 		}
 		
-
-		public void connectToRandomNodes(Node thisNode, Node[] toNodes, bool sameZone)
+		public void randomConnection(Node thisNode, Node[] toNodes)
 		{
-			List<Node> validnodes = new List<Node>();	//only use nodes that can still get more connections	
-			foreach (Node n in toNodes)
-			{
-				if (n == null)
-					continue;
-				if(n.neighbors.Count < 4)
-					validnodes.Add(n);//only use nodes that can make a new connection
-			}
-			if(validnodes.Count == 0)
-				return; // no nodes to connect to
-			
-			int nConnections = 2;
-			if( thisNode.GetType() != typeof(Bridge) )
-			{
-				int actualMaxConnections = Math.Min(validnodes.Count, 2);//correct the maximum number of connections (can't make more connections than nodes available)
-				nConnections = r.Next(1,actualMaxConnections);//atleast 1 so the node is actualy getting connected to the rest of the graph
-			}
-			for (int i = 0; i < nConnections; i++)
-			{
-				Node chosenNode = randomConnection(thisNode,validnodes,sameZone);
-				if(chosenNode!=null)
-					validnodes.Remove(chosenNode);//remove so there can't be made a second connection between thisNode and the chosenNode
-			}
-		}
+			int l = toNodes.Length;
+			if (l == 0)
+				return; // no nodes to connect to (this is a valid situation)
 
-		public Node randomConnection(Node thisNode, List<Node> toNodes, bool sameZone)
-		{
-			int l = toNodes.Count;
-			if(l == 0)
-				return null;// no nodes to connect to (this is a valid situation)
-
-			if(thisNode.neighbors.Count >= maxConnectivity)
-				return null;// thisNode is not allowed to have more neigbours
+			if (thisNode.neighbors.Count >= maxConnectivity)
+				return;// thisNode is not allowed to have more neigbours
 			
 			int index = 0;
-
-			if(l == 1)
-			{
-				if(thisNode == toNodes[0])
-				{
-					Logger.log("tried to connect to itself");//should not happen
-					return null;//no valid nodes to connect to
-				}
-			}
-			else
-			{
-				index = r.Next(l - 1);
-				if(toNodes[index].neighbors.Count >=maxConnectivity)
-					throw new Exception("toNodes contained a node with atleast maxconnectivity neighbors");
-			}
-
-			//if thisNode is a bridge, connect to the correct side, else use normal connect
-			if(thisNode.GetType() == typeof(Bridge))
-				connectBridge((thisNode as Bridge), toNodes[index], sameZone);
-			else
-				thisNode.connect(toNodes[index]);
-
-			return toNodes[index];//return chosen node
+			index = r.Next(l - 1);
+			if (toNodes[index] == thisNode)
+				return;
+			if (toNodes[index].neighbors.Count >= maxConnectivity)
+				return;
+			thisNode.connect(toNodes[index]);
 		}
 
 		// connects the correct side of the bridge to a given node
