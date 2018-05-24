@@ -28,7 +28,7 @@ namespace STVRogue.GameLogic
 			dungeon = new Dungeon(difficultyLevel, nodeCapcityMultiplier);
             int monsterHP = 0;
 			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
-            DistributePotions(player, numberOfMonsters, monsterHP);
+            //DistributePotions(player, numberOfMonsters, monsterHP);
         }
 
 		private void PopulateDungeon(int monsters, ref int monsterHP)
@@ -84,7 +84,7 @@ namespace STVRogue.GameLogic
 			}
 		}
 
-        private void DistributePotions(Player P, uint monsters, int monsterHP)
+        /*private void DistributePotions(Player P, uint monsters, int monsterHP)
         {
             Random r = RandomGenerator.rnd;
             int totalHP = P.HP;
@@ -104,7 +104,7 @@ namespace STVRogue.GameLogic
             {
                 index = r.Next(0, (int)dungeon.M))
             }
-        }
+        }*/
 
         /*
          * A single update turn to the game. 
