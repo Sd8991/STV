@@ -280,5 +280,18 @@ namespace STVRogue.GameLogic
 			Assert.IsTrue(sp[0] == expectedSp[0]);
 			Assert.IsTrue(sp[1] == expectedSp[1]);
 		}
+
+        [TestMethod]
+        public void MSTest_Distribute_Potions()
+        {
+            RandomGenerator.initializeWithSeed(1);
+            Random r = RandomGenerator.rnd;
+            Dungeon d = new Dungeon(5);
+            Player P = new Player();
+            Pack pack = new Pack("pack", 3);
+            P.dungeon = d;
+            pack.dungeon = d;
+            Assert.IsTrue()
+        }
 	}
 }
