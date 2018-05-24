@@ -91,7 +91,7 @@ namespace STVRogue.GameLogic
             HealingPotion pot;
             List<HealingPotion> pots = new List<HealingPotion>();
             int index;
-            int zones = dungeon.zone.Count();
+            List<Node> zone;
 
             while (totalHP <= 0.8f * monsterHP)
             {
@@ -100,9 +100,11 @@ namespace STVRogue.GameLogic
                     pots.Add(pot);
                 else break;
             }
-            foreach (HealingPotion pot in pots)
+            foreach (HealingPotion p in pots)
             {
-                index = r.Next(0, (int)dungeon.M))
+                zone = dungeon.zone[r.Next(dungeon.zone.Count)];
+                index = r.Next(0, zone.Count);
+                zone[index].items.Add(p);
             }
         }*/
 
