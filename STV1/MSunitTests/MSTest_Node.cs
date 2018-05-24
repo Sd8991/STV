@@ -86,22 +86,48 @@ namespace STVRogue.GameLogic
         [TestMethod]
         public void MSTest_combat_pack_flees()
         {
+            Dungeon dungeon = new Dungeon(5);
             Utils.RandomGenerator.initializeWithSeed(1);
             Random r = Utils.RandomGenerator.rnd;
             Player P = new Player();
             Pack pack = new Pack("pack", 1);
             pack.members[0].HP = 6;
             pack.startingHP = 100;
-            Node fightNode = new Node(1);
-            Node retreatNode = new Node(1);
-            fightNode.packs.Add(pack);
-            fightNode.connect(retreatNode);
-            pack.location = fightNode;
-            P.location = fightNode;
-            fightNode.fight(P, 1, true);
-            Assert.IsTrue(!fightNode.contested(P));
+            P.dungeon = dungeon;
+            pack.dungeon = dungeon;
+            P.location = dungeon.zone[1][0];
+            pack.location = dungeon.zone[1][0];
+            dungeon.zone[1][0].packs.Add(pack);
+            dungeon.zone[1][0].fight(P, 1, true);
+            Assert.IsTrue(!dungeon.zone[1][0].contested(P));
             Assert.IsTrue(P.KillPoint == 0);
-            Assert.IsTrue(retreatNode.packs.Contains(pack));
+            Assert.IsTrue(dungeon.zone[1][1].packs.Contains(pack) || dungeon.zone[1][2].packs.Contains(pack));
+        }
+
+        [TestMethod]
+        public void MSTest_combat_pack_flees_still_contested()
+        {
+            Dungeon dungeon = new Dungeon(5);
+            Utils.RandomGenerator.initializeWithSeed(1);
+            Random r = Utils.RandomGenerator.rnd;
+            Player P = new Player();
+            Pack pack = new Pack("pack", 1);
+            Pack pack2 = new Pack("pack2", 1);
+            pack.members[0].HP = 6;
+            pack2.members[0].HP = 6;
+            pack.startingHP = 100;
+            pack2.startingHP = 100;
+            P.dungeon = dungeon;
+            pack.dungeon = dungeon;
+            pack2.dungeon = dungeon;
+            P.location = dungeon.zone[1][0];
+            pack.location = dungeon.zone[1][0];
+            pack2.location = dungeon.zone[1][0];
+            dungeon.zone[1][0].packs.Add(pack);
+            dungeon.zone[1][0].packs.Add(pack2);
+            dungeon.zone[1][0].fight(P, 1, true);
+            Assert.IsTrue((dungeon.zone[1][1].packs.Count == 1 || dungeon.zone[1][2].packs.Count == 1) && dungeon.zone[1][0].packs.Count == 0);
+            Assert.IsTrue(P.KillPoint == 1);
         }
     }
 }
