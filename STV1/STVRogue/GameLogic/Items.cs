@@ -21,7 +21,7 @@ namespace STVRogue.GameLogic
                 Logger.log("" + player.id + " is trying to use an expired item: "
                               + this.GetType().Name + " " + id
                               + ". Rejected.");
-                return;
+                throw new ArgumentException();
             }
             Logger.log("" + player.id + " uses " + this.GetType().Name + " " + id);
             used = true;
@@ -51,9 +51,14 @@ namespace STVRogue.GameLogic
         public Crystal(String id) : base(id) { }
         override public void use(Player player)
         {
-            base.use(player);
-            player.accelerated = true;
-            if (player.location is Bridge) player.dungeon.disconnect(player.location as Bridge);
+            if (player.location.contested(player) || player.location is Bridge)
+            {
+                base.use(player);
+                if (player.location.contested(player)) player.accelerated = true;
+                if (player.location is Bridge) player.dungeon.disconnect(player.location as Bridge);
+            }
+            else Logger.log("Player not in combat or on bridge. Rejected.");
+            
         }
     }
 }

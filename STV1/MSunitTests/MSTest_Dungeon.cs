@@ -234,14 +234,19 @@ namespace STVRogue.GameLogic
 			Node node1 = new Node();
 			Node node2 = new Node();
 			Node node3 = new Node();
-			Node node4 = new Node();
-			bridge.connectToNodeOfNextZone(node1);
+			Node node4 = new Node();            
+            bridge.connectToNodeOfNextZone(node1);
 			bridge.connectToNodeOfNextZone(node2);
 			bridge.connectToNodeOfSameZone(node3);
-			bridge.connectToNodeOfSameZone(node4);
-			Dungeon d = new Dungeon();
-			d.disconnect(bridge);
-			Assert.IsTrue(bridge.GetFromNodes.Count == 2);
+			bridge.connectToNodeOfSameZone(node4);           
+            Dungeon d = new Dungeon();
+            Player P = new Player();
+            P.location = bridge;
+            P.dungeon = d;
+            Item x = new Crystal("cryst1");
+            P.bag.Add(x);
+            P.use(x);
+            Assert.IsTrue(bridge.GetFromNodes.Count == 2);
 			Assert.IsTrue(bridge.neighbors.Contains(node1) && bridge.neighbors.Contains(node2));
 			Assert.IsTrue(!bridge.neighbors.Contains(node3) && !bridge.neighbors.Contains(node4));
 			Assert.IsTrue(!node3.neighbors.Contains(bridge) && !node4.neighbors.Contains(bridge));
@@ -280,5 +285,18 @@ namespace STVRogue.GameLogic
 			Assert.IsTrue(sp[0] == expectedSp[0]);
 			Assert.IsTrue(sp[1] == expectedSp[1]);
 		}
+
+        [TestMethod]
+        public void MSTest_Distribute_Potions()
+        {
+            RandomGenerator.initializeWithSeed(1);
+            Random r = RandomGenerator.rnd;
+            Dungeon d = new Dungeon(5);
+            Player P = new Player();
+            Pack pack = new Pack("pack", 3);
+            P.dungeon = d;
+            pack.dungeon = d;
+            Assert.IsTrue()
+        }
 	}
 }

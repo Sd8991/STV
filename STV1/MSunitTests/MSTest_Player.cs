@@ -36,7 +36,7 @@ namespace STVRogue.GameLogic
             P.HP = 50;
             Item x = new HealingPotion("pot1");
             P.bag.Add(x);
-            P.use(x);
+            x.used = true;
             P.use(x);
         }
 
@@ -54,6 +54,13 @@ namespace STVRogue.GameLogic
         public void MSTest_become_accelerated()
         {
             Player P = new Player();
+            Pack pa = new Pack("pid", 1);
+            Dungeon d = new Dungeon(5);
+            P.dungeon = d;
+            P.location = d.zone[1][0];
+            pa.dungeon = d;
+            pa.location = d.zone[1][0];
+            d.zone[1][0].packs.Add(pa);
             Item x = new Crystal("cry1");
             P.bag.Add(x);
             P.use(x);

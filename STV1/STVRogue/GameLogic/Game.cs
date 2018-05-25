@@ -29,10 +29,12 @@ namespace STVRogue.GameLogic
                        + nodeCapcityMultiplier + ", and " + numberOfMonsters + " monsters.");
             player = new Player();
 			dungeon = new Dungeon(difficultyLevel, nodeCapcityMultiplier);
-			PopulateDungeon((int)numberOfMonsters);
+            int monsterHP = 0;
+			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
+            //DistributePotions(player, numberOfMonsters, monsterHP);
         }
 
-		public void PopulateDungeon(int monsters)
+		public void PopulateDungeon(int monsters, ref int monsterHP)
 		{
 			PopulateDungeon(monsters, dungeon);
 		}
@@ -85,10 +87,35 @@ namespace STVRogue.GameLogic
 						j++;
 						monstersThisZone -= nPack;
 						curZone[index].packs.Add(pack);
+                        monsterHP += pack.startingHP; 
 					}
 				}
 			}
 		}
+
+        /*private void DistributePotions(Player P, uint monsters, int monsterHP)
+        {
+            Random r = RandomGenerator.rnd;
+            int totalHP = P.HP;
+            HealingPotion pot;
+            List<HealingPotion> pots = new List<HealingPotion>();
+            int index;
+            List<Node> zone;
+
+            while (totalHP <= 0.8f * monsterHP)
+            {
+                pot = new HealingPotion("Minor Healing Potion of Major Healing" + pots.Count);
+                if (totalHP + pot.HPvalue <= 0.8f * monsterHP)
+                    pots.Add(pot);
+                else break;
+            }
+            foreach (HealingPotion p in pots)
+            {
+                zone = dungeon.zone[r.Next(dungeon.zone.Count)];
+                index = r.Next(0, zone.Count);
+                zone[index].items.Add(p);
+            }
+        }*/
 
         /*
          * A single update turn to the game. 
