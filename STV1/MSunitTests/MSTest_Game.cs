@@ -14,7 +14,8 @@ namespace STVRogue.GameLogic
 			int monsters = 20;
 			Dungeon dungeon = new Dungeon(level,m);
 			Game game = new Game();
-			game.PopulateDungeon(monsters, dungeon);
+			int ignore = 0;
+			game.PopulateDungeon(monsters, ref ignore, dungeon);
 			int l = dungeon.zone.Count +1;
 			for (int i = 1; i < l; i++)
 			{

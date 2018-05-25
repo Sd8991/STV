@@ -296,7 +296,7 @@ namespace STVRogue.GameLogic
             Pack pack = new Pack("pack", 3);
             P.dungeon = d;
             pack.dungeon = d;
-            Assert.IsTrue()
+			Assert.IsTrue();
         }
 	}
 }

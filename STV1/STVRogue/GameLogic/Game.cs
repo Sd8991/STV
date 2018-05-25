@@ -36,10 +36,10 @@ namespace STVRogue.GameLogic
 
 		public void PopulateDungeon(int monsters, ref int monsterHP)
 		{
-			PopulateDungeon(monsters, dungeon);
+			PopulateDungeon(monsters, ref monsterHP, dungeon);
 		}
 
-		public void PopulateDungeon(int monsters, Dungeon dungeon)
+		public void PopulateDungeon(int monsters, ref int monsterHP, Dungeon dungeon)
 		{
 			int monstersLeft = monsters;
 			int l = dungeon.zone.Count+1;
@@ -93,7 +93,7 @@ namespace STVRogue.GameLogic
 			}
 		}
 
-        /*private void DistributePotions(Player P, uint monsters, int monsterHP)
+        /* private void DistributePotions(Player P, uint monsters, int monsterHP)
         {
             Random r = RandomGenerator.rnd;
             int totalHP = P.HP;
