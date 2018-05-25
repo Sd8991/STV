@@ -19,9 +19,12 @@ namespace STVRogue.GameLogic
          * the nodes' capacity are not violated. Furthermore the seeding of the monsters
          * and items should meet the balance requirements stated in the Project Document.
          */
+		 /// <summary>
+		 /// empty constructor to test methods
+		 /// </summary>
+		 public Game() { }
         public Game(uint difficultyLevel, uint nodeCapcityMultiplier, uint numberOfMonsters)
         {
-			Predicates p = new Predicates();
             Logger.log("Creating a game of difficulty level " + difficultyLevel + ", node capacity multiplier "
                        + nodeCapcityMultiplier + ", and " + numberOfMonsters + " monsters.");
             player = new Player();
@@ -29,16 +32,21 @@ namespace STVRogue.GameLogic
 			PopulateDungeon((int)numberOfMonsters);
         }
 
-		private void PopulateDungeon(int monsters)
+		public void PopulateDungeon(int monsters)
+		{
+			PopulateDungeon(monsters, dungeon);
+		}
+
+		public void PopulateDungeon(int monsters, Dungeon dungeon)
 		{
 			int monstersLeft = monsters;
-			int l = dungeon.zone.Count;
+			int l = dungeon.zone.Count+1;
 
 			Random r = RandomGenerator.rnd;
-			int rMax = (int)dungeon.M;
 
-			for (int i = 0; i < l; i++)
+			for (int i = 1; i < l; i++)
 			{
+				int rMax = (int)dungeon.M;
 				List<Node> curZone = dungeon.zone[i];
 				int monstersThisZone = (2*i*monsters)/(int)((dungeon.difficultyLevel+2)*(dungeon.difficultyLevel+1));
 				if(monstersThisZone>monstersLeft)
@@ -52,13 +60,14 @@ namespace STVRogue.GameLogic
 				}
 				//if (monstersThisZone > monstersLeft)
 				//	monstersThisZone = monstersLeft;
-				//monstersLeft -= monstersThisZone;				
-
+				//monstersLeft -= monstersThisZone;
 				int j = 1;
 				string idPrefix = "Pack-" + i + ".";
 				while(monstersThisZone > 0)
 				{
-					int nPack = r.Next(0,rMax);
+					if (rMax > monstersThisZone)
+						rMax = monstersThisZone;
+					int nPack = r.Next(1,rMax);
 					int index = r.Next(curZone.Count);
 					if (curZone[index] == dungeon.exitNode)
 						continue;//not allowed to drop in exitnode, skip
@@ -74,7 +83,7 @@ namespace STVRogue.GameLogic
 					{
 						Pack pack = new Pack(idPrefix + j,(uint)nPack);
 						j++;
-						monstersLeft -= nPack;
+						monstersThisZone -= nPack;
 						curZone[index].packs.Add(pack);
 					}
 				}
@@ -87,6 +96,7 @@ namespace STVRogue.GameLogic
         public Boolean update(Command userCommand)
         {
             Logger.log("Player does " + userCommand);
+			userCommand.ExecuteCommand(player);
             return true;
         }
     }
