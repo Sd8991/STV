@@ -50,6 +50,11 @@ namespace STVRogue.GameLogic
             HP = HPbase;
         }
 
+        public void GetNextCommand()
+        {
+            //Iteration 1: ExecuteCommand Attack on random target
+            //Iteration 2: while (!input) if (player does thing) {input = true; ExecuteCommand();}                           
+        }
         public void use(Item item)
         {
             if (!bag.Contains(item)) throw new ArgumentException();
@@ -100,6 +105,22 @@ namespace STVRogue.GameLogic
                 */
                 accelerated = false;
             }
+        }
+    }
+
+    public class TestPlayer : Player
+    {
+        List<Command> CommandQueue;
+        //Test-version of player to run tests with that the normal player doesn't allow for
+        public TestPlayer(List<Command> CommandQueue)
+        {
+            this.CommandQueue = CommandQueue;
+        }
+
+        public new void GetNextCommand()
+        {
+            CommandQueue[0].ExecuteCommand(this);
+            CommandQueue.RemoveAt(0);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace STVRogue.GameLogic
@@ -107,14 +108,19 @@ namespace STVRogue.GameLogic
         [TestMethod]
         public void MSTest_combat_pack_flees_still_contested()
         {
+            //To do:
+            // - Hook up TestPlayer.GetNextCommand() to the combat in a way that allows combat involving a regular player to still work           
             Dungeon dungeon = new Dungeon(5);
             Utils.RandomGenerator.initializeWithSeed(1);
-            Random r = Utils.RandomGenerator.rnd;
-            Player P = new Player();
+            Random r = Utils.RandomGenerator.rnd;           
             Pack pack = new Pack("pack", 1);
             Pack pack2 = new Pack("pack2", 1);
+            List<Command> Queue = new List<Command>();
+            Queue.Add(new AttackCommand(pack.members[0]));
+            Queue.Add(new MoveCommand(dungeon.zone[1][1]));
+            TestPlayer P = new TestPlayer(Queue);
             pack.members[0].HP = 6;
-            pack2.members[0].HP = 6;
+            pack2.members[0].HP = 1;
             pack.startingHP = 100;
             pack2.startingHP = 100;
             P.dungeon = dungeon;
@@ -126,8 +132,8 @@ namespace STVRogue.GameLogic
             dungeon.zone[1][0].packs.Add(pack);
             dungeon.zone[1][0].packs.Add(pack2);
             dungeon.zone[1][0].fight(P, 1, true);
-            Assert.IsTrue((dungeon.zone[1][1].packs.Count == 1 || dungeon.zone[1][2].packs.Count == 1) && dungeon.zone[1][0].packs.Count == 0);
-            Assert.IsTrue(P.KillPoint == 1);
+            Assert.IsTrue(dungeon.zone[1][1].packs.Count == 1 || dungeon.zone[1][2].packs.Count == 1);
+            Assert.IsTrue(pack2.location == dungeon.zone[1][0]);
         }
     }
 }
