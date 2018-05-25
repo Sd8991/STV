@@ -11,6 +11,7 @@ namespace STVRogue.GameLogic
     {
         public Player player;
         public Dungeon dungeon;
+        public uint potionHP;
 
         /* This creates a player and a random dungeon of the given difficulty level and node-capacity
          * The player is positioned at the dungeon's starting-node.
@@ -22,7 +23,7 @@ namespace STVRogue.GameLogic
 		 /// <summary>
 		 /// empty constructor to test methods
 		 /// </summary>
-		 public Game() { }
+		public Game() { }
         public Game(uint difficultyLevel, uint nodeCapcityMultiplier, uint numberOfMonsters)
         {
             Logger.log("Creating a game of difficulty level " + difficultyLevel + ", node capacity multiplier "
@@ -93,29 +94,38 @@ namespace STVRogue.GameLogic
 			}
 		}
 
-        /* private void DistributePotions(Player P, uint monsters, int monsterHP)
+        public uint DistributePotions(Player P, uint monsterHP, uint potionHP)
+        {
+            DistributePotions(P, monsterHP, potionHP, dungeon);
+            return this.potionHP;
+        }
+
+        public void DistributePotions(Player P, uint monsterHP, uint potionHP, Dungeon D)
         {
             Random r = RandomGenerator.rnd;
-            int totalHP = P.HP;
+            this.potionHP = (uint)P.HP;
             HealingPotion pot;
             List<HealingPotion> pots = new List<HealingPotion>();
             int index;
             List<Node> zone;
 
-            while (totalHP <= 0.8f * monsterHP)
+            while (this.potionHP <= 0.8f * monsterHP)
             {
                 pot = new HealingPotion("Minor Healing Potion of Major Healing" + pots.Count);
-                if (totalHP + pot.HPvalue <= 0.8f * monsterHP)
+                if (this.potionHP + pot.HPvalue <= 0.8f * monsterHP)
+                {
                     pots.Add(pot);
+                    this.potionHP += pot.HPvalue;
+                }
                 else break;
             }
             foreach (HealingPotion p in pots)
             {
-                zone = dungeon.zone[r.Next(dungeon.zone.Count)];
+                zone = dungeon.zone[r.Next(dungeon.zone.Count) + 1];
                 index = r.Next(0, zone.Count);
                 zone[index].items.Add(p);
             }
-        }*/
+        }
 
         /*
          * A single update turn to the game. 

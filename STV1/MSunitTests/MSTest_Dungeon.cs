@@ -289,14 +289,18 @@ namespace STVRogue.GameLogic
         [TestMethod]
         public void MSTest_Distribute_Potions()
         {
+            Game game = new Game();
             RandomGenerator.initializeWithSeed(1);
             Random r = RandomGenerator.rnd;
             Dungeon d = new Dungeon(5);
             Player P = new Player();
-            Pack pack = new Pack("pack", 3);
             P.dungeon = d;
-            pack.dungeon = d;
-			Assert.IsTrue();
+            game.dungeon = d;
+            game.dungeon.zone = d.zone;
+            uint potionHP = 0;
+            uint monsterHP = 300;
+            uint newPotionHP = game.DistributePotions(P, monsterHP, potionHP);
+			Assert.IsTrue(newPotionHP <= 0.8f * monsterHP);
         }
 	}
 }
