@@ -111,8 +111,10 @@ namespace STVRogue.GameLogic
             Monster M2 = pack.members[1];
             P.accelerated = true;
             P.Attack(pack.members[0]);
-            Assert.IsTrue(pack.members.Contains(M2) && M2.HP > 0);
-            Assert.IsFalse(pack.members.Contains(M1) && M1.HP == 0);
+            Assert.IsTrue(pack.members.Contains(M2));
+            Assert.IsTrue(M2.HP > 0);
+            Assert.IsFalse(pack.members.Contains(M1));
+            Assert.IsTrue(M1.HP == 0);
         }
 
         [TestMethod]
@@ -126,7 +128,8 @@ namespace STVRogue.GameLogic
             Monster M2 = pack.members[1];
             P.accelerated = true;
             P.Attack(pack.members[0]);
-            Assert.IsTrue(pack.members.Contains(M1) && pack.members.Contains(M2));
+            Assert.IsTrue(pack.members.Contains(M1));
+            Assert.IsTrue(pack.members.Contains(M2));
         }
 
         [TestMethod]

@@ -20,7 +20,8 @@ namespace STVRogue.GameLogic
             Node baseNode = new Node("baseNode");
             Node nbNode = new Node("nbNode");
             baseNode.connect(nbNode);
-            Assert.IsTrue(baseNode.neighbors.Contains(nbNode) && nbNode.neighbors.Contains(baseNode));
+            Assert.IsTrue(baseNode.neighbors.Contains(nbNode));
+            Assert.IsTrue(nbNode.neighbors.Contains(baseNode));
         }
 
         [TestMethod]
@@ -31,7 +32,8 @@ namespace STVRogue.GameLogic
             baseNode.neighbors.Add(nbNode);
             baseNode.neighbors.Add(baseNode);
             baseNode.disconnect(nbNode);
-            Assert.IsFalse(baseNode.neighbors.Contains(nbNode) && nbNode.neighbors.Contains(baseNode));
+            Assert.IsFalse(baseNode.neighbors.Contains(nbNode));
+            Assert.IsFalse(nbNode.neighbors.Contains(baseNode));
         }
 
         [TestMethod]
@@ -102,7 +104,7 @@ namespace STVRogue.GameLogic
             dungeon.zone[1][0].fight(P, 1, true);
             Assert.IsTrue(!dungeon.zone[1][0].contested(P));
             Assert.IsTrue(P.KillPoint == 0);
-            Assert.IsTrue(dungeon.zone[1][1].packs.Contains(pack) || dungeon.zone[1][2].packs.Contains(pack));
+            Assert.IsTrue(dungeon.zone[1][1].packs.Contains(pack));
         }
 
         [TestMethod]
@@ -132,7 +134,7 @@ namespace STVRogue.GameLogic
             dungeon.zone[1][0].packs.Add(pack);
             dungeon.zone[1][0].packs.Add(pack2);
             dungeon.zone[1][0].fight(P, 1, true);
-            Assert.IsTrue(dungeon.zone[1][1].packs.Count == 1 || dungeon.zone[1][2].packs.Count == 1);
+            Assert.IsTrue(dungeon.zone[1][1].packs.Count == 1);
             Assert.IsTrue(pack2.location == dungeon.zone[1][0]);
         }
     }
