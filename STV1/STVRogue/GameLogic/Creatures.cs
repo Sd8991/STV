@@ -52,8 +52,11 @@ namespace STVRogue.GameLogic
 
         public void GetNextCommand()
         {
-            //Iteration 1: ExecuteCommand Attack on random target
-            //Iteration 2: while (!input) if (player does thing) {input = true; ExecuteCommand();}                           
+            Pack targetPack = location.packs[RandomGenerator.rnd.Next(location.packs.Count)];
+            Monster targetMon = (targetPack.members.Count > 1) ? targetPack.members[RandomGenerator.rnd.Next(1, targetPack.members.Count) - 1] : targetPack.members[0];
+            Attack(targetMon);
+            if (targetPack.members.Count == 0) location.packs.Remove(targetPack);
+
         }
         public void use(Item item)
         {
