@@ -264,55 +264,6 @@ namespace STVRogue.GameLogic
 				return uint.Parse(d.id.Split()[1]);//given node is a bridge, return it's level
 			else
 				return 0;
-			/*
-			//Breadth First Search
-			Queue q = new Queue();
-			List<Node> seen = new List<Node>();//nodes that are already visited
-			List<Node> bridgesFound = new List<Node>(2);//can't be more than 2 bridges in a level/zone
-			q.Enqueue(d);
-
-			while(q.Count != 0)
-			{
-				Node subtree = q.Dequeue();
-				if(subtree == startNode)
-					return 1;//node in same zone as startNode, therefor level 1
-
-				if(subtree.GetType() == typeof(Bridge))
-				{
-					if(!bridgesFound.Contains(subtree))
-					{
-						bridgesFound.Add(subtree);//found new bridge
-						if(bridgesFound.Count == 2)
-							break;//found 2 unique bridges
-					}
-				}
-				else
-				{
-					foreach (Node n in subtree.neighbors)
-					{
-						if(seen.Contains(n))
-							continue;//allready found this node, don't add again
-						if(!q.Contains(n))	
-							q.Enqueue(n);
-					}
-					seen.Add(subtree);
-				}
-			}
-
-			if(bridgesFound.Count != (1 || 2))
-				throw new Exception("something went horribly wrong");
-			//not same zone as start node and only 1 bridge, therefor endzone
-			if(bridgesFound.Count == 1)
-				return uint.Parse(bridgesFound[0].id.Split[1]);
-			else
-			{
-				uint bridge1 = uint.Parse(bridgesFound[0].id.Split[1]);
-				uint bridge2 = uint.Parse(bridgesFound[1].id.Split[1]);
-				if(bridge1<bridge2)
-					return bridge2;
-				else
-					return bridge1;
-			}*/
 		}
     }
 
@@ -345,7 +296,9 @@ namespace STVRogue.GameLogic
 
         public bool contested(Player player)
         {
-            return (player.location == this && packs.Count > 0);
+            bool playerishere = (player.location == this);
+            bool hasPacks = (packs.Count > 0);
+            return (playerishere && hasPacks);
         }
 
         /* Execute a fight between the player and the packs in this node.

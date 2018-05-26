@@ -145,5 +145,27 @@ namespace STVRogue.GameLogic
             P.Attack(pack.members[0]);
             Assert.IsTrue(pack.CurrentHP() == 0);
         }
-    }
+
+		[TestMethod]
+		public void MStest_Pickup_items()
+		{
+			Item item1 = new Item("item1");
+			Item item2 = new Item("item2");
+			Item item3 = new Item("item3");
+			Node node = new Node();
+			node.items.Add(item1);
+			node.items.Add(item2);
+			node.items.Add(item3);
+			Player player = new Player();
+			player.location = node;
+			player.PickUpItems();
+
+			Assert.IsTrue(player.bag.Contains(item1));
+			Assert.IsFalse(node.items.Contains(item1));
+			Assert.IsTrue(player.bag.Contains(item2));
+			Assert.IsFalse(node.items.Contains(item2));
+			Assert.IsTrue(player.bag.Contains(item3));
+			Assert.IsFalse(node.items.Contains(item3));
+		}
+	}
 }

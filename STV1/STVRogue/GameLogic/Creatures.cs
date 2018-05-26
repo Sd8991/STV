@@ -50,7 +50,7 @@ namespace STVRogue.GameLogic
             HP = HPbase;
         }
 
-        public void GetNextCommand()
+        public virtual void GetNextCommand()
         {
             Pack targetPack = location.packs[RandomGenerator.rnd.Next(location.packs.Count)];
             Monster targetMon = (targetPack.members.Count > 1) ? targetPack.members[RandomGenerator.rnd.Next(1, targetPack.members.Count) - 1] : targetPack.members[0];
@@ -64,6 +64,15 @@ namespace STVRogue.GameLogic
             item.use(this);
             bag.Remove(item);
         }
+
+		public void PickUpItems()
+		{
+			foreach (Item item in location.items)
+			{
+				bag.Add(item);
+			}
+			location.items.RemoveAll((x)=>bag.Contains(x));
+		}
 
         override public void Attack(Creature foe)
         {
@@ -120,7 +129,7 @@ namespace STVRogue.GameLogic
             this.CommandQueue = CommandQueue;
         }
 
-        public new void GetNextCommand()
+        public override void GetNextCommand()
         {
             CommandQueue[0].ExecuteCommand(this);
             CommandQueue.RemoveAt(0);
