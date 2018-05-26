@@ -312,11 +312,8 @@ namespace STVRogue.GameLogic
              - Attack after failed flee attempt? (currently present)*/
             //throw new NotImplementedException(); //still missing node contest check
             while (contested(player))
-            {                
-                Pack targetPack = packs[rnd.Next(packs.Count)];
-                Monster targetMon = (targetPack.members.Count > 1) ? targetPack.members[rnd.Next(1, targetPack.members.Count) - 1] : targetPack.members[0];
-                player.Attack(targetMon);
-                if (targetPack.members.Count == 0) packs.Remove(targetPack);
+            {
+                player.GetNextCommand();
                 if (!contested(player)) break;
                 Pack attackPack = packs[rnd.Next(packs.Count - 1)];
                 double fleeCheck = rnd.NextDouble();
