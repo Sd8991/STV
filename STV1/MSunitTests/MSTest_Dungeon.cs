@@ -15,7 +15,9 @@ namespace STVRogue.GameLogic
 			Dungeon d = new Dungeon(3, 2);
 			Predicates p = new Predicates();
 			Assert.IsTrue(p.isReachable(d.startNode, d.exitNode));
-			Assert.IsFalse(d.startNode is Bridge || d.exitNode is Bridge);
+            //Assert.IsFalse(d.startNode is Bridge || d.exitNode is Bridge);
+            Assert.IsFalse(d.startNode is Bridge);
+            Assert.IsFalse(d.exitNode is Bridge);
 			List<Node> nodes = p.reachableNodes(d.startNode);
 			int totalConnectivityDegree = 0;
 			foreach (Node nd in nodes)
@@ -98,17 +100,27 @@ namespace STVRogue.GameLogic
 			Bridge exitnode = new Bridge("2");
 			Dungeon d = new Dungeon();
 			d.GenerateSubGraph(entrynode, exitnode, 1, 2, 2);
-			Assert.IsTrue(entrynode.neighbors.Count == 2 && entrynode.neighbors.Contains(exitnode) == false);
-			Assert.IsTrue(exitnode.neighbors.Count == 2 && exitnode.neighbors.Contains(entrynode) == false);
+			Assert.IsTrue(entrynode.neighbors.Count == 2);
+            Assert.IsTrue(entrynode.neighbors.Contains(exitnode) == false);
+			Assert.IsTrue(exitnode.neighbors.Count == 2);
+            Assert.IsTrue(exitnode.neighbors.Contains(entrynode) == false);
 			List<Node> nodes1 = entrynode.neighbors[0].neighbors;
 			List<Node> nodes2 = entrynode.neighbors[1].neighbors;
-			Assert.IsTrue(nodes1.Count >= 2 && nodes1.Contains(entrynode) && nodes1.Contains(exitnode), $"count {nodes1.Count}, {nodes1.Contains(entrynode)}, {nodes1.Contains(exitnode)}");
-			Assert.IsTrue(nodes2.Count >= 2 && nodes2.Contains(entrynode) && nodes2.Contains(exitnode));
+			Assert.IsTrue(nodes1.Count >= 2);
+            Assert.IsTrue(nodes1.Contains(entrynode));
+            Assert.IsTrue(nodes1.Contains(exitnode), $"count {nodes1.Count}, {nodes1.Contains(entrynode)}, {nodes1.Contains(exitnode)}");
+            Assert.IsTrue(nodes2.Count >= 2);
+            Assert.IsTrue(nodes2.Contains(entrynode));
+            Assert.IsTrue(nodes2.Contains(exitnode));
 			List<Node> nodes3 = exitnode.neighbors[0].neighbors;
 			List<Node> nodes4 = exitnode.neighbors[1].neighbors;
-			Assert.IsTrue(nodes3.Count >= 2 && nodes3.Contains(entrynode) && nodes3.Contains(exitnode));
-			Assert.IsTrue(nodes4.Count >= 2 && nodes4.Contains(entrynode) && nodes4.Contains(exitnode));
-		}
+			Assert.IsTrue(nodes3.Count >= 2);
+            Assert.IsTrue(nodes3.Contains(entrynode));
+            Assert.IsTrue(nodes3.Contains(exitnode));
+			Assert.IsTrue(nodes4.Count >= 2);
+            Assert.IsTrue(nodes4.Contains(entrynode));
+            Assert.IsTrue(nodes4.Contains(exitnode));
+        }
 		#endregion
 
 		#region RandomConnection() tests
@@ -181,7 +193,8 @@ namespace STVRogue.GameLogic
 			Node testnode = new Node("test");
 			Dungeon d = new Dungeon();
 			d.randomConnection(testnode, graph);
-			Assert.IsTrue(testnode.neighbors.Contains(thisnode) && thisnode.neighbors.Contains(testnode));
+			Assert.IsTrue(testnode.neighbors.Contains(thisnode));
+            Assert.IsTrue(thisnode.neighbors.Contains(testnode));
 		}
 
 		[TestMethod]
@@ -213,7 +226,9 @@ namespace STVRogue.GameLogic
 			Node node = new Node();
 			Dungeon d = new Dungeon();
 			d.connectBridge(bridge, node, true);
-			Assert.IsTrue(bridge.GetFromNodes.Contains(node) && bridge.neighbors.Contains(node) && node.neighbors.Contains(bridge));
+			Assert.IsTrue(bridge.GetFromNodes.Contains(node));
+            Assert.IsTrue(bridge.neighbors.Contains(node));
+            Assert.IsTrue(node.neighbors.Contains(bridge));
 		}
 
 		[TestMethod]
@@ -223,7 +238,9 @@ namespace STVRogue.GameLogic
 			Node node = new Node();
 			Dungeon d = new Dungeon();
 			d.connectBridge(bridge, node, false);
-			Assert.IsTrue(bridge.GetToNodes.Contains(node) && bridge.neighbors.Contains(node) && node.neighbors.Contains(bridge));
+			Assert.IsTrue(bridge.GetToNodes.Contains(node));
+            Assert.IsTrue(bridge.neighbors.Contains(node));
+            Assert.IsTrue(node.neighbors.Contains(bridge));
 		}
 		#endregion
 
@@ -247,9 +264,12 @@ namespace STVRogue.GameLogic
             P.bag.Add(x);
             P.use(x);
             Assert.IsTrue(bridge.GetFromNodes.Count == 2);
-			Assert.IsTrue(bridge.neighbors.Contains(node1) && bridge.neighbors.Contains(node2));
-			Assert.IsTrue(!bridge.neighbors.Contains(node3) && !bridge.neighbors.Contains(node4));
-			Assert.IsTrue(!node3.neighbors.Contains(bridge) && !node4.neighbors.Contains(bridge));
+			Assert.IsTrue(bridge.neighbors.Contains(node1));
+            Assert.IsTrue(bridge.neighbors.Contains(node2));
+			Assert.IsTrue(!bridge.neighbors.Contains(node3));
+            Assert.IsTrue(!bridge.neighbors.Contains(node4));
+			Assert.IsTrue(!node3.neighbors.Contains(bridge));
+            Assert.IsTrue(!node4.neighbors.Contains(bridge));
 		}
 		[TestMethod]
 		public void MSTest_level()
@@ -260,7 +280,8 @@ namespace STVRogue.GameLogic
 			uint nodeLevel = d.level(node);
 			uint bridgeLevel = d.level(bridge);
 
-			Assert.IsTrue(nodeLevel == 0 && bridgeLevel == 4);
+			Assert.IsTrue(nodeLevel == 0);
+            Assert.IsTrue(bridgeLevel == 4);
 		}
 		[TestMethod]
 		public void MSTest_shortestpath()
