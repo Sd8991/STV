@@ -65,6 +65,15 @@ namespace STVRogue.GameLogic
             bag.Remove(item);
         }
 
+		public void PickUpItems()
+		{
+			foreach (Item item in location.items)
+			{
+				bag.Add(item);
+			}
+			location.items.RemoveAll((x)=>bag.Contains(x));
+		}
+
         override public void Attack(Creature foe)
         {
             if (!(foe is Monster)) throw new ArgumentException();

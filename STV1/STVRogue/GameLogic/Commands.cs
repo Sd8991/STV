@@ -39,6 +39,7 @@ namespace STVRogue
 		public override void ExecuteCommand(Player p)
 		{
 			p.location = node;
+			p.PickUpItems();
 		}
 		public override string ToString()
 		{
