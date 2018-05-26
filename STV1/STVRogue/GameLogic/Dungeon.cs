@@ -345,7 +345,9 @@ namespace STVRogue.GameLogic
 
         public bool contested(Player player)
         {
-            return (player.location == this && packs.Count > 0);
+            bool playerishere = (player.location == this);
+            bool hasPacks = (packs.Count > 0);
+            return (playerishere && hasPacks);
         }
 
         /* Execute a fight between the player and the packs in this node.

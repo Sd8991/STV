@@ -107,9 +107,7 @@ namespace STVRogue.GameLogic
 
         [TestMethod]
         public void MSTest_combat_pack_flees_still_contested()
-        {
-            //To do:
-            // - Hook up TestPlayer.GetNextCommand() to the combat in a way that allows combat involving a regular player to still work           
+        {                     
             Dungeon dungeon = new Dungeon(5);
             Utils.RandomGenerator.initializeWithSeed(1);
             Random r = Utils.RandomGenerator.rnd;           
@@ -133,7 +131,7 @@ namespace STVRogue.GameLogic
             dungeon.zone[1][0].packs.Add(pack2);
             dungeon.zone[1][0].fight(P, 1, true);
             Assert.IsTrue(dungeon.zone[1][1].packs.Count == 1 || dungeon.zone[1][2].packs.Count == 1);
-            Assert.IsTrue(pack2.location == dungeon.zone[1][0]);
+            Assert.IsTrue(dungeon.zone[1][0].packs.Count == 1);
         }
     }
 }

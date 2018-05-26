@@ -50,7 +50,7 @@ namespace STVRogue.GameLogic
             HP = HPbase;
         }
 
-        public void GetNextCommand()
+        public virtual void GetNextCommand()
         {
             Pack targetPack = location.packs[RandomGenerator.rnd.Next(location.packs.Count)];
             Monster targetMon = (targetPack.members.Count > 1) ? targetPack.members[RandomGenerator.rnd.Next(1, targetPack.members.Count) - 1] : targetPack.members[0];
@@ -120,7 +120,7 @@ namespace STVRogue.GameLogic
             this.CommandQueue = CommandQueue;
         }
 
-        public new void GetNextCommand()
+        public override void GetNextCommand()
         {
             CommandQueue[0].ExecuteCommand(this);
             CommandQueue.RemoveAt(0);
