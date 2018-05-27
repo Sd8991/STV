@@ -46,10 +46,16 @@ namespace STVRogue.GameLogic
             Assert.IsTrue(crystal.id == "crystID");
         }
 
-        /*[TestMethod]
-        public void MStest_use_crystal_on_bridge()    //Still necessary when MStest_disconnect_nodes exists?
+        [TestMethod]
+        public void MStest_invalid_crystal_use()
         {
-
-        }*/
+            Dungeon d = new Dungeon(5);
+            Player p = new Player();
+            p.location = d.zone[1][0];
+            Crystal crystal = new Crystal("crystID");
+            p.bag.Add(crystal);
+            p.use(crystal);
+            Assert.IsTrue(p.bag.Count == 1);
+        }
     }
 }

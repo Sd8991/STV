@@ -11,6 +11,7 @@ namespace STVRogue.GameLogic
     {
         public String id;
         public Boolean used = false;
+        public bool rejected = false;
         public Item() { }
         public Item(String id) { this.id = id; }
 
@@ -51,13 +52,18 @@ namespace STVRogue.GameLogic
         public Crystal(String id) : base(id) { }
         override public void use(Player player)
         {
+            rejected = false;
             if (player.location.contested(player) || player.location is Bridge)
             {
                 base.use(player);
                 if (player.location.contested(player)) player.accelerated = true;
                 if (player.location is Bridge) player.dungeon.disconnect(player.location as Bridge);
             }
-            else Logger.log("Player not in combat or on bridge. Rejected.");
+            else
+            {
+                Logger.log("Player not in combat or on bridge. Rejected.");
+                rejected = true;
+            }
             
         }
     }

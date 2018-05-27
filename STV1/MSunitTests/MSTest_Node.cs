@@ -66,6 +66,26 @@ namespace STVRogue.GameLogic
         }
 
         [TestMethod]
+        public void MSTest_fight_multiple_packs()
+        {
+            Utils.RandomGenerator.initializeWithSeed(0);
+            Random r = Utils.RandomGenerator.rnd;
+            Player P = new Player();
+            Pack pack = new Pack("pack", 2);
+            pack.members[0].HP = 5;
+            pack.members[1].HP = 5;
+            pack.startingHP = 10;
+            Node fightNode = new Node(0);
+            fightNode.packs.Add(pack);
+            P.location = fightNode;
+            pack.location = fightNode;
+            fightNode.fight(P, 0, true);
+            Assert.IsTrue(!fightNode.contested(P));
+            Assert.IsTrue(fightNode.packs.Count == 0);
+            Assert.IsTrue(P.KillPoint == 2);
+        }
+
+        [TestMethod]
         public void MSTest_combat_pack_not_flees_does_attack_dies()
         {
             Utils.RandomGenerator.initializeWithSeed(0);

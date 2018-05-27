@@ -37,7 +37,8 @@ namespace STVRogue.GameLogic
             this.M = M;
             Node N0 = new Node("N0");
             Node N1 = new Node("N1");
-            Node N2 = new Node("N2");          
+            Node N2 = new Node("N2");
+            Node N3 = new Node("N3");      
             N0.connect(N1);
             N0.connect(N2);
             N1.connect(N2);
@@ -45,6 +46,7 @@ namespace STVRogue.GameLogic
             nodes.Add(N0);
             nodes.Add(N1);
             nodes.Add(N2);
+            nodes.Add(N3);
             zone = new Dictionary<int, List<Node>>();
             zone.Add(1, nodes);
         }
@@ -77,13 +79,13 @@ namespace STVRogue.GameLogic
 				ValidGraph = true; //predicates.isValidDungeon(startNode,exitNode,difficultyLevel);
 				if (ValidGraph)
 					Logger.log("Valid dungeonGraph");
-				else
+				/*else
 				{
 					Logger.log("Invalid dungeonGraph");
 					RandomGenerator.initializeWithSeed(seed);
 					r = RandomGenerator.rnd;
 					seed++;
-				}
+				}*/
 			}
 		}
 

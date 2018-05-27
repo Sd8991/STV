@@ -308,6 +308,14 @@ namespace STVRogue.GameLogic
 		}
 
         [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void MSTest_no_shortest_path()
+        {
+            Dungeon d = new Dungeon(5);
+            List<Node> sp = d.shortestpath(d.zone[1][0], d.zone[1][3]);
+        }
+
+        [TestMethod]
         public void MSTest_Distribute_Potions()
         {
             Game game = new Game();

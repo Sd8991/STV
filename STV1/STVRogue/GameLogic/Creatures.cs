@@ -62,7 +62,7 @@ namespace STVRogue.GameLogic
         {
             if (!bag.Contains(item)) throw new ArgumentException();
             item.use(this);
-            bag.Remove(item);
+            if(!item.rejected)bag.Remove(item);
         }
 
 		public void PickUpItems()
