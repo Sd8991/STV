@@ -1,52 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace STVRogue.GameLogic
 {
-	class GamePlay
+	abstract class GamePlay
 	{
-		bool fromFile;
-		Game initial, playing;
-		List<Command> turnList;
-		int currentTurn;
+		protected BinaryFormatter formatter;
+		protected Game initial;
+		protected List<Command> turnList;
+		protected Tuple<uint, uint, uint, int, List<Command>> gameTuple;
+	}
 
+	class RecordGamePlay : GamePlay
+	{
+		public RecordGamePlay(Game g)
+		{			
+			initial = new Game(g.getDificultitylevel,g.getNodeCapcityMultiplier,g.getNumberOfMonsters,g.GetSeed);
+			if (g != initial)
+				throw new Exception("Could not recreate same game instance based on parameters");
 
-		public GamePlay(string file)
-		{
-			fromFile = true;
-			reset();
-			throw new NotImplementedException("construct from file");
-			turnList = 
-			initial = 
-			playing = initial;
-
-		}
-		/// <summary>
-		/// Constructor to record a gameplay
-		/// </summary>
-		/// <param name="g"></param>
-		public GamePlay(Game g)
-		{
-			fromFile = false;
-			initial = g;
 			turnList = new List<Command>();
+			formatter = new BinaryFormatter();
 		}
 
 		public void RecordTurn(Command c)
 		{
-			if (fromFile)
-				throw new MethodAccessException("tried to add turn to a recorded gameplay");
 			turnList.Add(c);
 		}
 
 		public void saveToFile(string fileName, string filepath = "../../")
 		{
-
+			try
+			{
+				gameTuple = new Tuple<uint, uint, uint, int, List<Command>>(initial.getDificultitylevel, initial.getNodeCapcityMultiplier, initial.getNumberOfMonsters, initial.GetSeed, turnList);
+				FileStream writerFileStream = new FileStream(filepath + fileName, FileMode.Create, FileAccess.Write);
+				formatter.Serialize(writerFileStream, gameTuple);
+				writerFileStream.Close();
+			}
+			catch (Exception)
+			{
+				Console.WriteLine("save failed");
+			}
 		}
 
+	}
+	class ReplayGamePlay:GamePlay
+	{
+		int currentTurn;
+		Game playing;
+
+		public ReplayGamePlay(string filename, string path = "../../")
+		{
+			formatter = new BinaryFormatter();
+			if (File.Exists(path + filename))
+			{
+				try
+				{
+					FileStream readerFileStream = new FileStream(path + filename, FileMode.Open, FileAccess.Read);
+					gameTuple = (Tuple<uint, uint, uint, int, List<Command>>)this.formatter.Deserialize(readerFileStream);
+					readerFileStream.Close();
+				}
+				catch (Exception)
+				{
+					Console.WriteLine("could not load file");
+				}
+				reset();
+				turnList = gameTuple.Item5;
+				initial = new Game(gameTuple.Item1, gameTuple.Item2, gameTuple.Item3, gameTuple.Item4);
+				playing = initial;
+			}
+			else
+				Console.WriteLine("file not found");
+
+		}
 		public void reset()
 		{
 			currentTurn = 0;

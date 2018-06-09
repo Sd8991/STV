@@ -3,6 +3,7 @@ using STVRogue.GameLogic;
 
 namespace STVRogue
 {
+	[Serializable]
     public class Command
     {
         public Command() { }
@@ -11,6 +12,7 @@ namespace STVRogue
         override public string ToString() { return "no-action"; }
     }
 
+	[Serializable]
 	public class AttackCommand : Command
 	{
 		private Creature target;
@@ -28,6 +30,8 @@ namespace STVRogue
 			return "attack " + target.name;
 		}
 	}
+
+	[Serializable]
 	public class MoveCommand : Command
 	{
 		private Node node;
@@ -46,6 +50,8 @@ namespace STVRogue
 			return "move to " + node.id;
 		}
 	}
+
+	[Serializable]
 	public class ItemCommand : Command
 	{
 		private Item item;

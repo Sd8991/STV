@@ -12,27 +12,39 @@ namespace STVRogue.GameLogic
         public Player player;
         public Dungeon dungeon;
         public uint potionHP;
+		public Random r;
+		uint difficultyLevel, nodeCapcityMultiplier, numberOfMonsters;
+		int seed;
+		public int GetSeed { get { return seed; } }
+		public uint getDificultitylevel { get { return difficultyLevel; } }
+		public uint getNodeCapcityMultiplier { get { return nodeCapcityMultiplier; } }
+		public uint getNumberOfMonsters { get { return numberOfMonsters; } }
 
-        /* This creates a player and a random dungeon of the given difficulty level and node-capacity
+		/* This creates a player and a random dungeon of the given difficulty level and node-capacity
          * The player is positioned at the dungeon's starting-node.
          * The constructor also randomly seeds monster-packs and items into the dungeon. The total
          * number of monsters are as specified. Monster-packs should be seeded as such that
          * the nodes' capacity are not violated. Furthermore the seeding of the monsters
          * and items should meet the balance requirements stated in the Project Document.
          */
-		 /// <summary>
-		 /// empty constructor to test methods
-		 /// </summary>
+		/// <summary>
+		/// empty constructor to test methods
+		/// </summary>
 		public Game() { }
-        public Game(uint difficultyLevel, uint nodeCapcityMultiplier, uint numberOfMonsters)
+        public Game(uint difficultyLevel, uint nodeCapcityMultiplier, uint numberOfMonsters, int seed = 11)
         {
             Logger.log("Creating a game of difficulty level " + difficultyLevel + ", node capacity multiplier "
                        + nodeCapcityMultiplier + ", and " + numberOfMonsters + " monsters.");
+			this.difficultyLevel = difficultyLevel;
+			this.nodeCapcityMultiplier = nodeCapcityMultiplier;
+			this.numberOfMonsters = numberOfMonsters;
+			this.seed = seed;
             player = new Player();
-			dungeon = new Dungeon(difficultyLevel, nodeCapcityMultiplier);
+			dungeon = new Dungeon(difficultyLevel, nodeCapcityMultiplier,seed);
+			r = dungeon.r;
             int monsterHP = 0;
 			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
-            //DistributePotions(player, numberOfMonsters, monsterHP);
+            DistributePotions(player, numberOfMonsters, (uint)monsterHP);
         }
 
 		public void PopulateDungeon(int monsters, ref int monsterHP)
@@ -44,8 +56,6 @@ namespace STVRogue.GameLogic
 		{
 			int monstersLeft = monsters;
 			int l = dungeon.zone.Count+1;
-
-			Random r = RandomGenerator.rnd;
 
 			for (int i = 1; i < l; i++)
 			{
@@ -102,7 +112,6 @@ namespace STVRogue.GameLogic
 
         public void DistributePotions(Player P, uint monsterHP, uint potionHP, Dungeon D)
         {
-            Random r = RandomGenerator.rnd;
             this.potionHP = (uint)P.HP;
             HealingPotion pot;
             List<HealingPotion> pots = new List<HealingPotion>();
