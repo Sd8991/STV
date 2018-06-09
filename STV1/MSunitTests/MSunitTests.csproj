@@ -66,6 +66,7 @@
     <Compile Include="MSTest_Dungeon.cs" />
     <Compile Include="MSTest_Game.cs" />
     <Compile Include="MSTest_Commands.cs" />
+    <Compile Include="MSTEST_RuleVertivication.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\STVRogue\STVRogue.csproj">

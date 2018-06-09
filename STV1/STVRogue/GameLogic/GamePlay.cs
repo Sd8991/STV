@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace STVRogue.GameLogic
 {
-	abstract class GamePlay
+	public abstract class GamePlay
 	{
 		protected BinaryFormatter formatter;
 		protected Game initial;
@@ -16,7 +16,7 @@ namespace STVRogue.GameLogic
 		protected Tuple<uint, uint, uint, int, List<Command>> gameTuple;
 	}
 
-	class RecordGamePlay : GamePlay
+	public class RecordGamePlay : GamePlay
 	{
 		public RecordGamePlay(Game g)
 		{			
@@ -49,7 +49,7 @@ namespace STVRogue.GameLogic
 		}
 
 	}
-	class ReplayGamePlay:GamePlay
+	public class ReplayGamePlay :GamePlay
 	{
 		int currentTurn,nTurns;
 		Game playing;

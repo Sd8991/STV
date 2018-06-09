@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace STVRogue.GameLogic
 {
-	abstract class Specification
+	public abstract class Specification
 	{
 		public abstract bool Test(Game g);
 	}
 
-	class Always : Specification
+	public class Always : Specification
 	{
 		private Predicate<Game> p;
 		public Always(Predicate<Game> p) { this.p = p; }
 		public override bool Test(Game g){ return p(g); }
 	}
-	class Unless : Specification
+	public class Unless : Specification
 	{
 		private Predicate<Game> p;
 		private Predicate<Game> q;
