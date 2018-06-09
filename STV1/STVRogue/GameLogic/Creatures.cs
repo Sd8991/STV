@@ -39,6 +39,7 @@ namespace STVRogue.GameLogic
     public class Player : Creature
     {
         public Dungeon dungeon;
+        public int zone = 0;
         public int HPbase = 100;
         public Boolean accelerated = false;
         public uint KillPoint = 0;
@@ -58,6 +59,25 @@ namespace STVRogue.GameLogic
             if (targetPack.members.Count == 0) location.packs.Remove(targetPack);
 
         }
+
+        public void processZone(Node n)
+        {
+            if (n is Bridge && (n as Bridge).GetToNodes.Contains(location)) zone--;
+            if (location is Bridge && (location as Bridge).GetToNodes.Contains(n))
+            {
+                zone++;
+                lastZoneCheck();
+            }
+        }
+
+        public void lastZoneCheck()
+        {
+            if (zone == dungeon.zone.Keys.Max())
+                foreach (Node n in dungeon.zone[zone])
+                    foreach (Pack p in n.packs)
+                        p.rLastZone = true;
+        }
+
         public void use(Item item)
         {
             if (!bag.Contains(item)) throw new ArgumentException();
