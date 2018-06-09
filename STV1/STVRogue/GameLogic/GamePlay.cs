@@ -51,7 +51,7 @@ namespace STVRogue.GameLogic
 	}
 	class ReplayGamePlay:GamePlay
 	{
-		int currentTurn;
+		int currentTurn,nTurns;
 		Game playing;
 
 		public ReplayGamePlay(string filename, string path = "../../")
@@ -73,6 +73,7 @@ namespace STVRogue.GameLogic
 				turnList = gameTuple.Item5;
 				initial = new Game(gameTuple.Item1, gameTuple.Item2, gameTuple.Item3, gameTuple.Item4);
 				playing = initial;
+				nTurns = turnList.Count();
 			}
 			else
 				Console.WriteLine("file not found");
@@ -96,7 +97,7 @@ namespace STVRogue.GameLogic
 
 		private bool hasNextTurn()
 		{
-			return currentTurn < turnList.Count();
+			return currentTurn < nTurns;
 		}
 
 		public bool replay(Specification S)
@@ -110,7 +111,8 @@ namespace STVRogue.GameLogic
 						replayTurn();
 					else
 						break;
-				return false;
+				else
+					return false;
 			}
 			return true;
 		}

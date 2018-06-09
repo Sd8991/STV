@@ -9,6 +9,7 @@ namespace STVRogue.GameLogic
 {
     public class Game
     {
+        public UI ui;
         public Player player;
         public Dungeon dungeon;
         public uint potionHP;
@@ -45,6 +46,7 @@ namespace STVRogue.GameLogic
             int monsterHP = 0;
 			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
             DistributePotions(player, numberOfMonsters, (uint)monsterHP);
+            ui = new UI(dungeon);
         }
 
 		public void PopulateDungeon(int monsters, ref int monsterHP)
@@ -141,6 +143,7 @@ namespace STVRogue.GameLogic
          */
         public Boolean update(Command userCommand)
         {
+            ui.drawDungeon(dungeon, player);
             Logger.log("Player does " + userCommand);
 			userCommand.ExecuteCommand(player);
             return true;

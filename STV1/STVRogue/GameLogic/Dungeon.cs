@@ -272,6 +272,7 @@ namespace STVRogue.GameLogic
 
     public class Node
     {
+        public int depth;
         public Random rnd;
         public String id;
         public int seed;
@@ -280,10 +281,10 @@ namespace STVRogue.GameLogic
         public List<Pack> packs = new List<Pack>();
         public List<Item> items = new List<Item>();
 
-        public Node() { }
-        public Node(String id) { this.id = id; }
+        public Node() { depth = int.MaxValue; }
+        public Node(String id) { this.id = id; depth = int.MaxValue; }
 
-        public Node(int seed) { this.seed = seed; withSeed = true; }
+        public Node(int seed) { this.seed = seed; withSeed = true; depth = int.MaxValue; }
 
         /* To connect this node to another node. */
         public void connect(Node nd)
