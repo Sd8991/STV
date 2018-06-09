@@ -312,6 +312,7 @@ namespace STVRogue.GameLogic
          */
         public void fight(Player player, int seed, bool withSeed)
         {
+            triggerAlert(player.dungeon.zone[player.zone]);
             if (withSeed) RandomGenerator.initializeWithSeed(seed);
             rnd = RandomGenerator.rnd;
             /*Possibly to do:
@@ -343,6 +344,13 @@ namespace STVRogue.GameLogic
                 if (contested(player))
                     attackPack.Attack(player);
             }
+        }
+
+        public void triggerAlert(List<Node> nodes)
+        {
+            foreach (Node n in nodes)
+                foreach (Pack p in n.packs)
+                    p.rAlert = true;
         }
     }
 
