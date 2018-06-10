@@ -143,9 +143,10 @@ namespace STVRogue.GameLogic
          */
         public Boolean update(Command userCommand)
         {
-            ui.drawDungeon(dungeon, player);
             Logger.log("Player does " + userCommand);
 			userCommand.ExecuteCommand(player);
+            //ui.drawDungeon(dungeon, player);
+            ui.drawUI(dungeon, player);
             return true;
         }
     }
