@@ -30,7 +30,7 @@ namespace STVRogue.GameLogic
 			if (history.Count >= 1)
 			{
 				bool previous = history.Last();
-				verdict = !previous || (previous && (p(g) || q(g));
+				verdict = !previous || (previous && (p(g) || q(g)));
 			}
 			else
 				verdict = p(g) && !q(g);

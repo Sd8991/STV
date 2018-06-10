@@ -310,18 +310,13 @@ namespace STVRogue.GameLogic
          * A fight terminates when either the node has no more monster-pack, or when
          * the player's HP is reduced to 0. 
          */
-        public void fight(Player player, int seed, bool withSeed)
+        public void fight(Player player, int seed, bool withSeed) //now runs a single enemy turn
         {
-            triggerAlert(player.dungeon.zone[player.zone]);
             if (withSeed) RandomGenerator.initializeWithSeed(seed);
             rnd = RandomGenerator.rnd;
             /*Possibly to do:
              - Attack after failed flee attempt? (currently present)*/
             //throw new NotImplementedException(); //still missing node contest check
-            while (contested(player))
-            {
-                player.GetNextCommand();
-                if (!contested(player)) break;
                 Pack attackPack = packs[rnd.Next(packs.Count - 1)];
                 double fleeCheck = rnd.NextDouble();
                 double packHP = attackPack.CurrentHP();
@@ -341,9 +336,8 @@ namespace STVRogue.GameLogic
                         }                        
                     }                  
                 }
-                if (contested(player))
+                if (contested(player)) //still necessary?
                     attackPack.Attack(player);
-            }
         }
 
         public void triggerAlert(List<Node> nodes)

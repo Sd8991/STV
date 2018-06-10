@@ -146,6 +146,20 @@ namespace STVRogue.GameLogic
             ui.drawDungeon(dungeon, player);
             Logger.log("Player does " + userCommand);
 			userCommand.ExecuteCommand(player);
+            if (player.inCombat) player.location.fight(player, seed, true);
+            else
+            {
+                foreach (List<Node> l in dungeon.zone.Values) //Holy fuck, please tell me there's a better way to do this
+                {
+                    foreach (Node n in l)
+                    {
+                        foreach (Pack p in n.packs)
+                        {
+                            p.move(p.chooseDestination(player, seed, true));
+                        }
+                    }
+                }
+            }
             return true;
         }
     }
