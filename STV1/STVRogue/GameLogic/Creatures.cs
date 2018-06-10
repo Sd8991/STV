@@ -42,6 +42,7 @@ namespace STVRogue.GameLogic
         public int zone = 0;
         public int HPbase = 100;
         public Boolean accelerated = false;
+        public bool inCombat = false;
         public uint KillPoint = 0;
         public List<Item> bag = new List<Item>();
         public Player()

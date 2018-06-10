@@ -24,6 +24,7 @@ namespace STVRogue
 		public override void ExecuteCommand(Player p)
 		{
 			p.Attack(target);
+            if (!p.location.contested(p)) p.inCombat = false; //end combat by winning
 		}
 		public override string ToString()
 		{
@@ -40,12 +41,18 @@ namespace STVRogue
 			this.node = node;
 		}
 
-		public override void ExecuteCommand(Player p)
-		{
+        public override void ExecuteCommand(Player p)
+        {
             p.processZone(node);
-			p.location = node;
-			p.PickUpItems();
-		}
+            p.location = node;
+            p.PickUpItems();
+            if (!p.location.contested(p)) p.inCombat = false; //end combat by fleeing
+            if (p.location.contested(p))    //start combat
+            {
+                p.inCombat = true;
+                p.location.triggerAlert(p.dungeon.zone[p.zone]); // nested foreach inside. appropriate if-statement around call?
+            }
+        }
 		public override string ToString()
 		{
 			return "move to " + node.id;

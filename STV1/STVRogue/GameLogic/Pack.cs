@@ -51,6 +51,11 @@ namespace STVRogue.GameLogic
         /* Move the pack to an adjacent node. */
         public void move(Node u)
         {
+            if (u == location)
+            {
+                Logger.log("Pack" + id + " doesn't move.");
+                return;
+            }
             if (!location.neighbors.Contains(u)) throw new ArgumentException();
             int capacity = (int) (dungeon.M * (dungeon.level(u) + 1));
             // count monsters already in the node:
