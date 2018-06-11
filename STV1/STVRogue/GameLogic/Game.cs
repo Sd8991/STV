@@ -46,6 +46,7 @@ namespace STVRogue.GameLogic
             int monsterHP = 0;
 			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
             DistributePotions(player, numberOfMonsters, (uint)monsterHP);
+            player.location = dungeon.startNode;
             ui = new UI(dungeon);
         }
 
@@ -99,6 +100,8 @@ namespace STVRogue.GameLogic
 						Pack pack = new Pack(idPrefix + j,(uint)nPack);
 						j++;
 						monstersThisZone -= nPack;
+                        pack.location = curZone[index];
+                        pack.dungeon = dungeon;
 						curZone[index].packs.Add(pack);
                         monsterHP += pack.startingHP; 
 					}

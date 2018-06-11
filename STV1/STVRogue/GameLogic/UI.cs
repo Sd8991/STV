@@ -8,6 +8,7 @@ namespace STVRogue.GameLogic
 {
     public class UI
     {
+        //char[] drawPlot = new char[200, ]
         List<Tuple<int, int>> positions;
         public UI(Dungeon d)
         {
@@ -57,6 +58,7 @@ namespace STVRogue.GameLogic
             Console.WriteLine("**Packs in Zone: " + p.location.packs.Count + " -- Total HP: " + totalPackHP + " -- Alerted: " + packsAlerted);
             Console.Write("**Items: ");
             int counter = 0;
+            if (p.bag.Count == 0) Console.Write("Empty");
             foreach (Item i in p.bag)
             {
                 if (counter == 2)

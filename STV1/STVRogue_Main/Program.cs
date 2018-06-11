@@ -14,12 +14,12 @@ namespace STVRogue
         static void Main(string[] args)
         {
             Game game = new Game(5, 2, 20);
-            game.player.location = new Node("a dummy node");
             int width = Console.LargestWindowWidth;
             int height = Console.LargestWindowHeight;
             Console.SetWindowSize(width, height);
             while (true)
             {
+                game.ui.drawUI(game.dungeon, game.player);
                 Console.ReadKey();
                 game.update(new Command());
             }
