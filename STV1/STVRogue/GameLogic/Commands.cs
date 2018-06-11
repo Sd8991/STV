@@ -50,7 +50,7 @@ namespace STVRogue
             if (p.location.contested(p))    //start combat
             {
                 p.inCombat = true;
-                p.location.triggerAlert(p.dungeon.zone[p.zone]); // nested foreach inside. appropriate if-statement around call?
+                if (!p.location.packs[0].rAlert) p.location.triggerAlert(p.dungeon.zone[p.zone]);
             }
         }
 		public override string ToString()
