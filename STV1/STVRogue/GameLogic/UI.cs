@@ -43,8 +43,39 @@ namespace STVRogue.GameLogic
             }
         }
 
-        public void drawUI(Dungeon d)
+        public void drawUI(Dungeon d, Player p)
         {
+            Console.WriteLine("\n**Name: " + p.name + " -- Player HP: " + p.HP + " -- ATK: " + p.AttackRating + " -- Accelerated: " + p.accelerated);
+            Console.WriteLine("**Current Zone: " + p.zone + " -- KillPoints: " + p.KillPoint);
+            int totalPackHP = 0;
+            bool packsAlerted = false;
+            foreach (Pack pack in p.location.packs)
+            {
+                packsAlerted = pack.rAlert;
+                totalPackHP += pack.CurrentHP();
+            }
+            Console.WriteLine("**Packs in Zone: " + p.location.packs.Count + " -- Total HP: " + totalPackHP + " -- Alerted: " + packsAlerted);
+            Console.Write("**Items: ");
+            int counter = 0;
+            foreach (Item i in p.bag)
+            {
+                if (counter == 2)
+                {
+                    Console.Write("\n");
+                    counter = 0;
+                }
+                if (i is HealingPotion)
+                {
+                    HealingPotion I = (HealingPotion)i;
+                    Console.Write(i.id + "(" + I.HPvalue + "), ");
+                }
+                if (i is Crystal)
+                {
+                    Crystal I = (Crystal)i;
+                    Console.Write(i.id + ", ");
+                }
+                counter++;
+            }
 
         }
     }

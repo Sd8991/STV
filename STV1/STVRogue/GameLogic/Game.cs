@@ -143,7 +143,6 @@ namespace STVRogue.GameLogic
          */
         public Boolean update(Command userCommand)
         {
-            ui.drawDungeon(dungeon, player);
             Logger.log("Player does " + userCommand);
 			userCommand.ExecuteCommand(player);
             if (player.inCombat) player.location.fight(player, seed, true);
@@ -160,6 +159,8 @@ namespace STVRogue.GameLogic
                     }
                 }
             }
+            //ui.drawDungeon(dungeon, player);
+            ui.drawUI(dungeon, player);
             return true;
         }
     }

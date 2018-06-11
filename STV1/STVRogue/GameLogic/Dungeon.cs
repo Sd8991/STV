@@ -289,7 +289,7 @@ namespace STVRogue.GameLogic
         /* To connect this node to another node. */
         public void connect(Node nd)
         {
-            neighbors.Add(nd); nd.neighbors.Add(this);
+            neighbors.Add(nd); nd.neighbors.Add(this); nd.depth = Math.Min(nd.depth, depth + 1);
         }
 
         /* To disconnect this node from the given node. */
@@ -359,6 +359,7 @@ namespace STVRogue.GameLogic
         /* Use this to connect the bridge to a node from the same zone. */
         public void connectToNodeOfSameZone(Node nd)
         {
+            depth = 0;
             base.connect(nd);
             fromNodes.Add(nd);
         }
