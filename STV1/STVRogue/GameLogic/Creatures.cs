@@ -61,7 +61,7 @@ namespace STVRogue.GameLogic
 
         }
 
-        public void processZone(Node n)
+        public void processZone(Node n) //to do: disable alert in previous zone
         {
             if (n is Bridge && (n as Bridge).GetToNodes.Contains(location)) zone--;
             if (location is Bridge && (location as Bridge).GetToNodes.Contains(n))

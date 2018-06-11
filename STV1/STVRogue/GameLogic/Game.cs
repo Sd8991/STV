@@ -155,7 +155,7 @@ namespace STVRogue.GameLogic
                     {
                         foreach (Pack p in n.packs)
                         {
-                            p.move(p.chooseDestination(player, seed, true));
+                            p.move(p.chooseDestination(player, r));
                         }
                     }
                 }
