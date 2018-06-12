@@ -21,8 +21,9 @@ namespace STVRogue.GameLogic
 		public RecordGamePlay(Game g)
 		{			
 			initial = new Game(g.getDificultitylevel,g.getNodeCapcityMultiplier,g.getNumberOfMonsters,g.GetSeed);
-			if (g != initial)
-				throw new Exception("Could not recreate same game instance based on parameters");
+			//TODO: make method to check wether 2 games are equel
+			//if (g != initial)
+				//throw new Exception("Could not recreate same game instance based on parameters");
 
 			turnList = new List<Command>();
 			formatter = new BinaryFormatter();
@@ -33,7 +34,7 @@ namespace STVRogue.GameLogic
 			turnList.Add(c);
 		}
 
-		public void saveToFile(string fileName, string filepath = "../../")
+		public void saveToFile(string fileName, string filepath = "../../../Recordings/")
 		{
 			try
 			{
@@ -54,7 +55,7 @@ namespace STVRogue.GameLogic
 		int currentTurn,nTurns;
 		Game playing;
 
-		public ReplayGamePlay(string filename, string path = "../../")
+		public ReplayGamePlay(string filename, string path = "../../../Recordings/")
 		{
 			formatter = new BinaryFormatter();
 			if (File.Exists(path + filename))
