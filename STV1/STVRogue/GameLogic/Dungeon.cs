@@ -281,15 +281,15 @@ namespace STVRogue.GameLogic
         public List<Pack> packs = new List<Pack>();
         public List<Item> items = new List<Item>();
 
-        public Node() { depth = int.MaxValue; }
-        public Node(String id) { this.id = id; depth = int.MaxValue; }
+        public Node() { }
+        public Node(String id) { this.id = id; }
 
-        public Node(int seed) { this.seed = seed; withSeed = true; depth = int.MaxValue; }
+        public Node(int seed) { this.seed = seed; withSeed = true; }
 
         /* To connect this node to another node. */
         public void connect(Node nd)
         {
-            neighbors.Add(nd); nd.neighbors.Add(this); nd.depth = Math.Min(nd.depth, depth + 1);
+            neighbors.Add(nd); nd.neighbors.Add(this);
         }
 
         /* To disconnect this node from the given node. */
@@ -359,7 +359,6 @@ namespace STVRogue.GameLogic
         /* Use this to connect the bridge to a node from the same zone. */
         public void connectToNodeOfSameZone(Node nd)
         {
-            depth = 0;
             base.connect(nd);
             fromNodes.Add(nd);
         }
@@ -367,6 +366,7 @@ namespace STVRogue.GameLogic
         /* Use this to connect the bridge to a node from the next zone. */
         public void connectToNodeOfNextZone(Node nd)
         {
+            depth = 0;
             base.connect(nd);
             toNodes.Add(nd);
         }

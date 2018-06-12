@@ -14,7 +14,7 @@ namespace STVRogue
         static void Main(string[] args)
         {
             Game game = new Game(5, 2, 20);
-			RecordGamePlay recording = new RecordGamePlay(game);
+			//RecordGamePlay recording = new RecordGamePlay(game);
             int width = Console.LargestWindowWidth;
             int height = Console.LargestWindowHeight;
             Console.SetWindowSize(width, height);
@@ -23,7 +23,7 @@ namespace STVRogue
                 game.ui.drawUI(game.dungeon, game.player);
 				string input = Console.ReadLine();
 				Command command = ParseInput(input);
-				recording.RecordTurn(command);
+				//recording.RecordTurn(command);
                 game.update(command);
             }
         }
