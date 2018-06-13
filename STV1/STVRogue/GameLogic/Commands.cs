@@ -50,7 +50,7 @@ namespace STVRogue
             if (p.location.contested(p))    //start combat
             {
                 p.inCombat = true;
-                if (!p.location.packs[0].rAlert) p.location.triggerAlert(p.dungeon.zone[p.zone]);
+                if (!p.location.packs[0].rAlert) p.location.toggleAlert(p.dungeon.zone[p.zone]);
             }
         }
 		public override string ToString()

@@ -151,16 +151,18 @@ namespace STVRogue.GameLogic
             if (player.inCombat) player.location.fight(player, seed, true);
             else
             {
-                foreach (List<Node> l in dungeon.zone.Values) //Holy fuck, please tell me there's a better way to do this
+                List<Pack> toMove = new List<Pack>();
+                foreach (List<Node> l in dungeon.zone.Values)
                 {
                     foreach (Node n in l)
                     {
                         foreach (Pack p in n.packs)
                         {
-                            p.move(p.chooseDestination(player, r));
+                            toMove.Add(p);
                         }
                     }
                 }
+                foreach (Pack p in toMove) p.move(p.chooseDestination(player, r));
             }
             ui.drawDungeon(dungeon, player);
             ui.drawUI(dungeon, player);

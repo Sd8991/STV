@@ -121,8 +121,8 @@ namespace STVRogue.GameLogic
 			int n1 = r.Next(min, max);
 			int n2 = r.Next(min, max);
 
-			Node[] path1 = genSubPath(n1, entryNode, endNode);
-			Node[] path2 = genSubPath(n2, entryNode, endNode);
+			Node[] path1 = genSubPath(n1, entryNode, endNode, 0, level);
+			Node[] path2 = genSubPath(n2, entryNode, endNode, 1, level);
 
 			Node[] subgraph = new Node[n1+n2];
 			Array.Copy(path1, subgraph, path1.Length);
@@ -147,13 +147,13 @@ namespace STVRogue.GameLogic
 			zone[level].Add(endNode);
 		}
 
-		public Node[] genSubPath(int n,Node entryNode, Node endNode)
+		public Node[] genSubPath(int n,Node entryNode, Node endNode, int idMod, int lvl)
 		{
 			Node[] path = new Node[n];
-			path[0] = new Node();
+			path[0] = new Node(lvl + "_" + idMod);
 			for (int i = 1; i < n; i++)
 			{
-				path[i] = new Node();
+				path[i] = new Node(lvl + "_" + (2 * (i) + idMod));
 				path[i].connect(path[i - 1]);
 			}
 
@@ -336,15 +336,15 @@ namespace STVRogue.GameLogic
                         }                        
                     }                  
                 }
-                if (contested(player)) //still necessary?
+                if (contested(player))
                     attackPack.Attack(player);
         }
 
-        public void triggerAlert(List<Node> nodes)
+        public void toggleAlert(List<Node> nodes)
         {
             foreach (Node n in nodes)
                 foreach (Pack p in n.packs)
-                    p.rAlert = true;
+                    p.rAlert = !p.rAlert;
         }
     }
 

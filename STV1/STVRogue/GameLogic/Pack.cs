@@ -81,14 +81,18 @@ namespace STVRogue.GameLogic
 
         public bool rZone(Node u)
         {
-            if (u is Bridge)
+            if (u is Bridge)    // <---
             {
                 if (!(u as Bridge).GetFromNodes.Contains(location)) return false;
+            }
+            if (location is Bridge) // --->
+            {
+                if (!(location as Bridge).GetToNodes.Contains(u)) return false;
             }
             return true;
         }
 
-        public Node chooseDestination(Player p, Random rnd)// to do: use the rnd from Game
+        public Node chooseDestination(Player p, Random rnd)
         {
             List<Node> dest = new List<Node>();
             if (!rLastZone) dest.Add(location); //pack can't stand still if rLastZone is active
