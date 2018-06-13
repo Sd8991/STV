@@ -56,12 +56,31 @@ namespace STVRogue.GameLogic
 
             foreach (Node node in discoveredNodes)
             {
-                for (int y = 0; y <= 6; y++)
-                    for (int x = 0; x <= 6; x++)
-                        if (y > 0 && y < 6 && x > 0 && x < 6)
+                char nodeNr;
+                for (int y = 0; y <= 8; y++)
+                    for (int x = 0; x <= 8; x++)
+                        if (y > 0 && y < 8 && x > 0 && x < 8)
                         {
+                            if (node.id == "startNode")
+                                nodeNr = 'S';
+                            else nodeNr = node.id.Split('_')[1][0];
+                            if (x == 1 && y == 1)
+                                drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
                         }
-                        else drawPlot[x + (7 + 3) * node.depth , y + 3 + 8 * node.height] = '*';
+                        else drawPlot[x + (9 + 3) * node.depth , y + 3 + 10 * node.height] = '*';
+                int nbC = 0;
+                foreach (Node nb in node.neighbors)
+                {
+                    if (nb.id == "startNode")
+                        nodeNr = 'S';
+                    else if (nb.id.Contains("bridge"))
+                        nodeNr = 'B';
+                    else nodeNr = nb.id.Split('_')[1][0];
+                    drawPlot[7 + (9 + 3) * node.depth, nbC * 2 + 4 + 10 * node.height] = nodeNr;
+                    nbC++;
+                }
+                if (node.packs.Count > 0)
+                    drawPlot[4 + (9 + 3) * node.depth, 4 * 2 + 4 + 10 * node.height] = '!';
             }
             for (int y = 0; y < 51; y++)
                 for (int x = 0; x < 200; x++)
@@ -80,7 +99,7 @@ namespace STVRogue.GameLogic
                 totalPackHP += pack.CurrentHP();
             }
             Logger.log("Packs in Zone: " + p.location.packs.Count + " -- Total HP: " + totalPackHP + " -- Alerted: " + packsAlerted);
-            Console.Write("**Items: ");
+            Console.Write("** Items: ");
             int counter = 0;
             if (p.bag.Count == 0) Console.Write("Empty");
             foreach (Item i in p.bag)
