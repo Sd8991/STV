@@ -26,12 +26,13 @@ namespace STVRogue
 					Logger.log("VICTORY!");
 					break;
 				}
+                game.ui.drawDungeon(game.dungeon, game.player);
                 game.ui.drawUI(game.dungeon, game.player);
 				string input = Console.ReadLine();
 				if (input == "Quit")
 					break;
 				Command command = ParseInput(input,game.player);
-				recording.RecordTurn(command);
+				//recording.RecordTurn(command);
                 game.update(command);
             }
 			Logger.log("Do you want to save the recording of the game? {Yes, No}");
@@ -39,7 +40,7 @@ namespace STVRogue
 			{
 				Logger.log("Save recording as:");
 				string filename = Console.ReadLine();
-				recording.saveToFile(filename);
+				//recording.saveToFile(filename);
 			}
         }
 

@@ -11,37 +11,57 @@ namespace STVRogue.GameLogic
     {
         char[,] drawPlot;
         List<Node> discoveredNodes = new List<Node>();
+        public Dictionary<int, int> heightCounter = new Dictionary<int, int>();
+        public Dictionary<Tuple<int, int>, List<Node>> DepthHeight = new Dictionary<Tuple<int, int>, List<Node>>();
 
-        List<Tuple<int, int>> positions;
         public UI(Dungeon d, Player p)
         {
             p.location.depth = 0;
+            p.location.height = 0;
+            heightCounter[p.location.depth] = p.location.height;
+            try { DepthHeight[new Tuple<int, int>(p.zone, p.location.depth)].Add(p.location); }
+            catch { DepthHeight.Add(new Tuple<int, int>(p.zone, p.location.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, p.location.depth)].Add(p.location); }
             discoveredNodes.Add(p.location);
-            foreach (Node nb in p.location.neighbors)
+            /*foreach (Node nb in p.location.neighbors)
             {
                 nb.depth = p.location.depth + 1;
                 discoveredNodes.Add(nb);
-            }
+                try { nb.height = heightCounter[nb.depth]; }
+                catch { heightCounter[nb.depth] = 0; nb.height = heightCounter[nb.depth]; }
+                try { DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
+                catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
+                heightCounter[nb.depth] += 1;
+            }*/
             drawPlot = new char[200, 51];
             for (int i = 0; i < 200; i++)
             {
                 drawPlot[i, 0] = '#';
                 drawPlot[i, 50] = '#';
             }
-            positions = new List<Tuple<int, int>>();
         }
 
         public void drawDungeon(Dungeon d, Player p)
         {
+            foreach (Node nb in p.location.neighbors)
+            {
+                nb.depth = Math.Min(nb.depth, p.location.depth + 1);
+                if (!discoveredNodes.Contains(nb))
+                    discoveredNodes.Add(nb);
+                try { nb.height = heightCounter[nb.depth]; }
+                catch { heightCounter[nb.depth] = 0; nb.height = heightCounter[nb.depth]; }
+                try { DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
+                catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
+                heightCounter[nb.depth] += 1;
+            }
+
             foreach (Node node in discoveredNodes)
             {
                 for (int y = 0; y <= 6; y++)
                     for (int x = 0; x <= 6; x++)
                         if (y > 0 && y < 6 && x > 0 && x < 6)
-                        { }
-                        else drawPlot[x, y] = '*';
-
-
+                        {
+                        }
+                        else drawPlot[x + (7 + 3) * node.depth , y + 3 + 8 * node.height] = '*';
             }
             for (int y = 0; y < 51; y++)
                 for (int x = 0; x < 200; x++)
