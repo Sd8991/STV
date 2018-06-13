@@ -61,11 +61,16 @@ namespace STVRogue.GameLogic
 
         }
 
-        public void processZone(Node n) //to do: disable alert in previous zone
+        public void processZone(Node n) 
         {
-            if (n is Bridge && (n as Bridge).GetToNodes.Contains(location)) zone--;
+            if (n is Bridge && (n as Bridge).GetToNodes.Contains(location))
+            {
+                n.toggleAlert(dungeon.zone[zone]);
+                zone--;
+            }
             if (location is Bridge && (location as Bridge).GetToNodes.Contains(n))
             {
+                n.toggleAlert(dungeon.zone[zone]);
                 zone++;
                 lastZoneCheck();
             }
