@@ -9,6 +9,20 @@ namespace STVRogue.GameLogic
 	public abstract class Specification
 	{
 		public abstract bool Test(Game g);
+
+		public static bool AllNodes(Game g, Predicate<Node> p)
+		{
+			bool res = true;
+			foreach (int key in g.dungeon.zone.Keys)
+			{
+				List<Node> zone = g.dungeon.zone[key];
+				foreach (Node node in zone)
+				{
+					res = res && p(node);
+				}
+			}
+			return res;
+		}
 	}
 
 	public class Always : Specification

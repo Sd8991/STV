@@ -287,6 +287,16 @@ namespace STVRogue.GameLogic
 
         public Node(int seed) { this.seed = seed; withSeed = true; depth = int.MaxValue; height = 0; }
 
+		public int nMonsters()
+		{
+			int n = 0;
+			foreach (Pack pack in packs)
+			{
+				n += pack.members.Count();
+			}
+			return n;
+		}
+
         /* To connect this node to another node. */
         public void connect(Node nd)
         {
