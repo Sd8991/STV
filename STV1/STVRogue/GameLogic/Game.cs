@@ -102,6 +102,7 @@ namespace STVRogue.GameLogic
 						monstersThisZone -= nPack;
                         pack.location = curZone[index];
                         pack.dungeon = dungeon;
+						pack.zone = i;
 						curZone[index].packs.Add(pack);
                         monsterHP += pack.startingHP; 
 					}
