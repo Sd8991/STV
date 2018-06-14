@@ -13,6 +13,7 @@ namespace STVRogue.GameLogic
         public List<Monster> members = new List<Monster>();
         public int startingHP = 0;
         public Node location;
+		public int zone;
         public Dungeon dungeon;
         public Random rnd;
         public bool rAlert = false;

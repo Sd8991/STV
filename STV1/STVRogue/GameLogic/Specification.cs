@@ -23,6 +23,21 @@ namespace STVRogue.GameLogic
 			}
 			return res;
 		}
+
+		private static bool AllPacksInNode(Node n, Predicate<Pack> p)
+		{
+			bool res = true;
+			foreach(Pack pack in n.packs)
+			{
+				res = res && p(pack);
+			}
+			return res;
+		}
+
+		public static bool AllPacks(Game g, Predicate<Pack> p)
+		{
+			return AllNodes(g, (N => AllPacksInNode(N, p)));
+		}
 	}
 
 	public class Always : Specification

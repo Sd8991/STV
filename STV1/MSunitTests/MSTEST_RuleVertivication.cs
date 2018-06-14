@@ -34,10 +34,19 @@ namespace STVRogue.GameLogic
 			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
 			foreach (ReplayGamePlay gp in plays)
 			{
-				Assert.IsTrue(gp.replay(
-					new Always(G => Specification.AllNodes(G,
-						(N => N.nMonsters() <= G.dungeon.M * (G.dungeon.level(N) + 1)))
-					)));
+				Always al = new Always(G => Specification.AllNodes(G, (N => N.nMonsters() <= G.dungeon.M * (G.dungeon.level(N) + 1))));
+				Assert.IsTrue(gp.replay(al));
+			}
+		}
+
+		[TestMethod]
+		public void test_packs_never_leave_zone()
+		{
+			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
+			foreach (ReplayGamePlay gp in plays)
+			{
+				Always al = new Always(G => Specification.AllPacks(G, (P => G.dungeon.zone[P.zone].Contains(P.location))));
+				Assert.IsTrue(gp.replay(al));
 			}
 		}
 	}
