@@ -39,7 +39,7 @@ namespace STVRogue.GameLogic
     public class Player : Creature
     {
         public Dungeon dungeon;
-        public int zone = 0;
+        public int zone = 1;
         public int HPbase = 100;
         public Boolean accelerated = false;
         public bool inCombat = false;
