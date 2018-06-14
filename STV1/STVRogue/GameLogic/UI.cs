@@ -32,8 +32,8 @@ namespace STVRogue.GameLogic
                 catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
                 heightCounter[nb.depth] += 1;
             }*/
-            drawPlot = new char[200, 51];
-            for (int i = 0; i < 200; i++)
+            drawPlot = new char[Console.LargestWindowWidth, 51];
+            for (int i = 0; i < Console.LargestWindowWidth; i++)
             {
                 drawPlot[i, 0] = '#';
                 drawPlot[i, 50] = '#';
@@ -65,22 +65,30 @@ namespace STVRogue.GameLogic
                         {
                             if (node.id == "startNode")
                                 nodeNr = 'S';
+                            else if (node.id.Contains("bridge"))
+                                nodeNr = 'B';
                             else nodeNr = node.id.Split('_')[1][0];
                             if (x == 1 && y == 1)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Cyan;
                                 drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
-                            if (p.location == node)
-                                drawPlot[4 + (9 + 5) * node.depth, 5 + 3 + 13 * node.height] = 'P';
+                                Console.BackgroundColor = ConsoleColor.Black;
+                            }
                         }
                         else
                             drawPlot[x + (9 + 3) * node.depth , y + 3 + 10 * node.height] = '*';
                 int nbC = 0;
-                foreach (Node nb in node.neighbors)
+                for (int i = 0; i < node.neighbors.Count; i++)
                 {
-                    if (nb.id == "startNode")
+                    if (node.neighbors[i].id == "startNode")
                         nodeNr = 'S';
-                    else if (nb.id.Contains("bridge"))
+                    else if (node.neighbors[i].id.Contains("bridge"))
                         nodeNr = 'B';
-                    else nodeNr = nb.id.Split('_')[1][0];
+                    else
+                    {
+                        string temp = (i+1).ToString();
+                        nodeNr = temp.ToCharArray()[0];
+                    }
                     drawPlot[7 + (9 + 3) * node.depth, nbC * 2 + 4 + 10 * node.height] = nodeNr;
                     nbC++;
                 }
@@ -88,14 +96,14 @@ namespace STVRogue.GameLogic
                     drawPlot[4 + (9 + 3) * node.depth, 4 * 2 + 4 + 10 * node.height] = '!';
             }
             for (int y = 0; y < 51; y++)
-                for (int x = 0; x < 200; x++)
+                for (int x = 0; x < Console.LargestWindowWidth; x++)
                     Console.Write(drawPlot[x, y]);
         }
 
         public void drawUI(Dungeon d, Player p)
         {
             Logger.log("Name: " + p.name + " -- Player HP: " + p.HP + " -- ATK: " + p.AttackRating + " -- Accelerated: " + p.accelerated);
-            Logger.log("Current Zone: " + p.zone + " -- KillPoints: " + p.KillPoint);
+            Logger.log("Current Zone: " + p.zone + "Current Node: " + p.location.id + " -- KillPoints: " + p.KillPoint);
             int totalPackHP = 0;
             bool packsAlerted = false;
             foreach (Pack pack in p.location.packs)
@@ -126,6 +134,7 @@ namespace STVRogue.GameLogic
                 }
                 counter++;
             }
+            Console.WriteLine();
             Logger.log("Choose your action: ");
         }
     }
