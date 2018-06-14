@@ -27,5 +27,18 @@ namespace STVRogue.GameLogic
 				Assert.IsTrue(gp.replay(new Always(G => G.player.HP >= 0)));
 			}
 		}
+
+		[TestMethod]
+		public void test_node_never_over_capacity()
+		{
+			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
+			foreach (ReplayGamePlay gp in plays)
+			{
+				Assert.IsTrue(gp.replay(
+					new Always(G => Specification.AllNodes(G,
+						(N => N.nMonsters() <= G.dungeon.M * (G.dungeon.level(N) + 1)))
+					)));
+			}
+		}
 	}
 }
