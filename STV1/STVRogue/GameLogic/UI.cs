@@ -46,12 +46,14 @@ namespace STVRogue.GameLogic
             {
                 nb.depth = Math.Min(nb.depth, p.location.depth + 1);
                 if (!discoveredNodes.Contains(nb))
+                {
                     discoveredNodes.Add(nb);
-                try { nb.height = heightCounter[nb.depth]; }
-                catch { heightCounter[nb.depth] = 0; nb.height = heightCounter[nb.depth]; }
-                try { DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
-                catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
-                heightCounter[nb.depth] += 1;
+                    try { nb.height = heightCounter[nb.depth]; }
+                    catch { heightCounter[nb.depth] = 0; nb.height = heightCounter[nb.depth]; }
+                    try { DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
+                    catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
+                    heightCounter[nb.depth] += 1;
+                }
             }
 
             foreach (Node node in discoveredNodes)

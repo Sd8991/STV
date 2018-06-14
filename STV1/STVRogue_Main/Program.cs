@@ -52,7 +52,7 @@ namespace STVRogue
 			switch (parse[0])
 			{
 				case "Move":
-					index = int.Parse(parse[1]) - 1;
+					index = int.Parse(parse[1]);
 					return new MoveCommand(player.location.neighbors[index]);
 				case "Attack":
 					string[] pacMon = parse[1].Split('_');//split into pack id and monster index
