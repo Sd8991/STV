@@ -22,26 +22,18 @@ namespace STVRogue.GameLogic
             try { DepthHeight[new Tuple<int, int>(p.zone, p.location.depth)].Add(p.location); }
             catch { DepthHeight.Add(new Tuple<int, int>(p.zone, p.location.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, p.location.depth)].Add(p.location); }
             discoveredNodes.Add(p.location);
-            /*foreach (Node nb in p.location.neighbors)
-            {
-                nb.depth = p.location.depth + 1;
-                discoveredNodes.Add(nb);
-                try { nb.height = heightCounter[nb.depth]; }
-                catch { heightCounter[nb.depth] = 0; nb.height = heightCounter[nb.depth]; }
-                try { DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
-                catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
-                heightCounter[nb.depth] += 1;
-            }*/
+        }
+
+        public void drawDungeon(Dungeon d, Player p)
+        {
+            List<Node> realNb = new List<Node>();
             drawPlot = new char[Console.LargestWindowWidth, 51];
             for (int i = 0; i < Console.LargestWindowWidth; i++)
             {
                 drawPlot[i, 0] = '#';
                 drawPlot[i, 50] = '#';
             }
-        }
 
-        public void drawDungeon(Dungeon d, Player p)
-        {
             foreach (Node nb in p.location.neighbors)
             {
                 nb.depth = Math.Min(nb.depth, p.location.depth + 1);
@@ -70,10 +62,18 @@ namespace STVRogue.GameLogic
                             else nodeNr = node.id.Split('_')[1][0];
                             if (x == 1 && y == 1)
                             {
-                                Console.BackgroundColor = ConsoleColor.Cyan;
-                                drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
-                                Console.BackgroundColor = ConsoleColor.Black;
+                                for (int j = 0; j < p.location.neighbors.Count; j++)
+                                    if (!realNb.Contains(p.location.neighbors[j]))
+                                        realNb.Add(p.location.neighbors[j]);
+                                for (int i = 0; i < realNb.Count; i++)
+                                    if (realNb[i] == node)
+                                    {
+                                        drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = (i + 1).ToString().ToCharArray()[0];
+                                        break;
+                                    }
                             }
+                            if (x == 1 && y == 6)
+                                drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
                         }
                         else
                             drawPlot[x + (9 + 3) * node.depth , y + 3 + 10 * node.height] = '*';

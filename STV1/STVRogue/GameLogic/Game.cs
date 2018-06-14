@@ -47,6 +47,7 @@ namespace STVRogue.GameLogic
 			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
             DistributePotions(player, numberOfMonsters, (uint)monsterHP);
             player.location = dungeon.startNode;
+            player.dungeon = dungeon;
             ui = new UI(dungeon, player);
         }
 
