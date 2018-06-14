@@ -21,6 +21,7 @@ namespace STVRogue
             Console.SetWindowSize(width, height);
             while (true)
             {
+                Console.Clear();
 				if(game.player.location == game.dungeon.exitNode)
 				{
 					Logger.log("VICTORY!");

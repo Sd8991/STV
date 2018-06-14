@@ -66,8 +66,11 @@ namespace STVRogue.GameLogic
                             else nodeNr = node.id.Split('_')[1][0];
                             if (x == 1 && y == 1)
                                 drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
+                            if (p.location == node)
+                                drawPlot[4 + (9 + 5) * node.depth, 5 + 3 + 13 * node.height] = 'P';
                         }
-                        else drawPlot[x + (9 + 3) * node.depth , y + 3 + 10 * node.height] = '*';
+                        else
+                            drawPlot[x + (9 + 3) * node.depth , y + 3 + 10 * node.height] = '*';
                 int nbC = 0;
                 foreach (Node nb in node.neighbors)
                 {
@@ -121,7 +124,7 @@ namespace STVRogue.GameLogic
                 }
                 counter++;
             }
-
+            Logger.log("Choose your action: ");
         }
     }
 }
