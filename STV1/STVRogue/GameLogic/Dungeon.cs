@@ -371,6 +371,8 @@ namespace STVRogue.GameLogic
         /* Use this to connect the bridge to a node from the same zone. */
         public void connectToNodeOfSameZone(Node nd)
         {
+            depth = Math.Min(depth, nd.depth + 1);
+            height = 0;
             base.connect(nd);
             fromNodes.Add(nd);
         }

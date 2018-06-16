@@ -48,11 +48,42 @@ namespace STVRogue.GameLogic
                 }
             }
 
-            foreach (Node node in discoveredNodes)
+            char nodeNr;
+            for (int a = 0; a <= 8; a++)
+                for (int b = 0; b <= 8; b++)
+                {
+                    if (a > 0 && a < 8 && b > 0 && b < 8)
+                    {
+                        if (p.location.id == "startNode")
+                            nodeNr = 'S';
+                        else if (p.location.id.Contains("bridge"))
+                            nodeNr = 'B';
+                        else nodeNr = p.location.id.Split('_')[1][0];
+                        if (b == 1 && a == 1)
+                        {
+                            for (int j = 0; j < p.location.neighbors.Count; j++)
+                                if (!realNb.Contains(p.location.neighbors[j]))
+                                    realNb.Add(p.location.neighbors[j]);
+                            for (int i = 0; i < realNb.Count; i++)
+                                if (realNb[i] == p.location)
+                                {
+                                    drawPlot[b + (9 + 3) * p.location.depth, a + 3 + 10 * p.location.height] = (i + 1).ToString().ToCharArray()[0];
+                                    break;
+                                }
+                        }
+                        if (b == 1 && a == 6)
+                            drawPlot[b + (9 + 3) * p.location.depth, a + 3 + 10 * p.location.height] = nodeNr;
+                    }
+                    else
+                        drawPlot[b + (9 + 3) * p.location.depth, a + 3 + 10 * p.location.height] = '*';
+                    drawPlot[4 + (9 + 3) * p.location.depth, 4 + 3 + 10 * p.location.height] = 'P';
+                }
+
+            foreach (Node node in p.location.neighbors)
             {
-                char nodeNr;
                 for (int y = 0; y <= 8; y++)
                     for (int x = 0; x <= 8; x++)
+                    {
                         if (y > 0 && y < 8 && x > 0 && x < 8)
                         {
                             if (node.id == "startNode")
@@ -76,7 +107,8 @@ namespace STVRogue.GameLogic
                                 drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
                         }
                         else
-                            drawPlot[x + (9 + 3) * node.depth , y + 3 + 10 * node.height] = '*';
+                            drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = '*';
+                    }
                 int nbC = 0;
                 for (int i = 0; i < node.neighbors.Count; i++)
                 {
@@ -86,7 +118,7 @@ namespace STVRogue.GameLogic
                         nodeNr = 'B';
                     else
                     {
-                        string temp = (i+1).ToString();
+                        string temp = (i + 1).ToString();
                         nodeNr = temp.ToCharArray()[0];
                     }
                     drawPlot[7 + (9 + 3) * node.depth, nbC * 2 + 4 + 10 * node.height] = nodeNr;
@@ -135,6 +167,13 @@ namespace STVRogue.GameLogic
                 counter++;
             }
             Console.WriteLine();
+            if (p.location.contested(p))
+            {
+                Logger.log("Enemies: ");
+                foreach (Pack pack in p.location.packs)
+                    foreach (Monster m in pack.members)
+                        Logger.log(m.name + " (" + m.id + "), HP: " + m.HP);
+            }
             Logger.log("Choose your action: ");
         }
     }
