@@ -21,7 +21,6 @@ namespace STVRogue
             Console.SetWindowSize(width, height);
             while (true)
             {
-                Console.Clear();
 				if(game.player.location == game.dungeon.exitNode)
 				{
 					Logger.log("VICTORY!");
@@ -33,7 +32,8 @@ namespace STVRogue
 				if (input == "Quit")
 					break;
 				Command command = ParseInput(input,game.player);
-				recording.RecordTurn(command);
+                Console.Clear();
+                recording.RecordTurn(command);
                 game.update(command);
             }
 			Logger.log("Do you want to save the recording of the game? {Yes, No}");

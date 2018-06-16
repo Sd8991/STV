@@ -185,7 +185,8 @@ namespace STVRogue.GameLogic
 				return;
 			if (toNodes[index].neighbors.Count >= maxConnectivity)
 				return;
-			thisNode.connect(toNodes[index]);
+            if (!thisNode.neighbors.Contains(toNodes[index]))
+			    thisNode.connect(toNodes[index]);
 		}
 
 		// connects the correct side of the bridge to a given node
@@ -371,6 +372,8 @@ namespace STVRogue.GameLogic
         /* Use this to connect the bridge to a node from the same zone. */
         public void connectToNodeOfSameZone(Node nd)
         {
+            depth = Math.Min(depth, nd.depth + 1);
+            height = 0;
             base.connect(nd);
             fromNodes.Add(nd);
         }
