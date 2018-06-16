@@ -185,7 +185,8 @@ namespace STVRogue.GameLogic
 				return;
 			if (toNodes[index].neighbors.Count >= maxConnectivity)
 				return;
-			thisNode.connect(toNodes[index]);
+            if (!thisNode.neighbors.Contains(toNodes[index]))
+			    thisNode.connect(toNodes[index]);
 		}
 
 		// connects the correct side of the bridge to a given node
