@@ -15,34 +15,44 @@ namespace STVRogue
 	[Serializable]
 	public class AttackCommand : Command
 	{
-		private Creature target;
-		public AttackCommand(Creature target)
+		private string targetid;
+		public AttackCommand(string targetid)
 		{
-			this.target = target;
+			this.targetid = targetid;
 		}
 
 		public override void ExecuteCommand(Player p)
 		{
+			Creature target = null;
+			foreach (Pack pack in p.location.packs)
+			{
+				Monster found = pack.members.Find(M => M.id == targetid);
+				if (found != null) 
+					target = found;
+			}
+			if (target == null)
+				throw new Exception("target not found");
 			p.Attack(target);
             if (!p.location.contested(p)) p.inCombat = false; //end combat by winning
 		}
 		public override string ToString()
 		{
-			return "attack " + target.name;
+			return "attack ";// + target.name;
 		}
 	}
 
 	[Serializable]
 	public class MoveCommand : Command
 	{
-		private Node node;
-		public MoveCommand(Node node)
+		private int neighborIndex;
+		public MoveCommand(int neighborIndex)
 		{
-			this.node = node;
+			this.neighborIndex = neighborIndex;
 		}
 
         public override void ExecuteCommand(Player p)
         {
+			Node node = p.location.neighbors[neighborIndex];
             p.processZone(node);
             p.location = node;
             p.PickUpItems();
@@ -55,7 +65,7 @@ namespace STVRogue
         }
 		public override string ToString()
 		{
-			return "move to " + node.id;
+			return "move to ";// + node.id;
 		}
 	}
 

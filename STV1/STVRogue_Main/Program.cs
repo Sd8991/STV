@@ -15,7 +15,7 @@ namespace STVRogue
         static void Main(string[] args)
         {
             Game game = new Game(5, 2, 20);
-			//RecordGamePlay recording = new RecordGamePlay(game);
+			RecordGamePlay recording = new RecordGamePlay(game);
             int width = Console.LargestWindowWidth;
             int height = Console.LargestWindowHeight;
             Console.SetWindowSize(width, height);
@@ -33,7 +33,7 @@ namespace STVRogue
 				if (input == "Quit")
 					break;
 				Command command = ParseInput(input,game.player);
-				//recording.RecordTurn(command);
+				recording.RecordTurn(command);
                 game.update(command);
             }
 			Logger.log("Do you want to save the recording of the game? {Yes, No}");
@@ -41,7 +41,7 @@ namespace STVRogue
 			{
 				Logger.log("Save recording as:");
 				string filename = Console.ReadLine();
-				//recording.saveToFile(filename);
+				recording.saveToFile(filename);
 			}
         }
 
@@ -53,13 +53,13 @@ namespace STVRogue
 			{
 				case "Move":
 					index = int.Parse(parse[1]) - 1;
-					return new MoveCommand(player.location.neighbors[index]);
+					return new MoveCommand(index);
 				case "Attack":
 					string[] pacMon = parse[1].Split('_');//split into pack id and monster index
 					index = int.Parse(pacMon[1]);
 					Pack pack = player.location.packs.Find(p => p.id == pacMon[0]);//find selected pack
 					Creature target = pack.members[index];//find selected monster
-					return new AttackCommand(target);
+					return new AttackCommand(target.id);
 				case "Use":
 					index = int.Parse(parse[1]);
 					return new ItemCommand(player.bag[index]);

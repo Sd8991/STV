@@ -46,6 +46,7 @@ namespace STVRogue.GameLogic
 			catch (Exception)
 			{
 				Console.WriteLine("save failed");
+				Console.ReadLine();
 			}
 		}
 

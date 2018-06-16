@@ -145,7 +145,7 @@ namespace STVRogue.GameLogic
 				zone[level].Add(subgraph[i]);
 			}
 			zone[level].Add(endNode);
-			zone[level].Remove(startNode);
+			zone[level].Remove(entryNode);
 		}
 
 		public Node[] genSubPath(int n,Node entryNode, Node endNode, int idMod, int lvl)

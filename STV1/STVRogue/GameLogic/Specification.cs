@@ -16,15 +16,22 @@ namespace STVRogue.GameLogic
 			foreach (int key in g.dungeon.zone.Keys)
 			{
 				List<Node> zone = g.dungeon.zone[key];
-				foreach (Node node in zone)
-				{
-					res = res && p(node);
-				}
+				AllNodesInzone(zone, p);
 			}
 			return res;
 		}
 
-		private static bool AllPacksInNode(Node n, Predicate<Pack> p)
+		public static bool AllNodesInzone(List<Node> zone, Predicate<Node> p)
+		{
+			bool res = true;
+			foreach (Node node in zone)
+			{
+				res = res && p(node);
+			}
+			return res;
+		}
+
+		public static bool AllPacksInNode(Node n, Predicate<Pack> p)
 		{
 			bool res = true;
 			foreach(Pack pack in n.packs)
@@ -51,7 +58,7 @@ namespace STVRogue.GameLogic
 		private Predicate<Game> p;
 		private Predicate<Game> q;
 		List<bool> history;
-		public Unless(Predicate<Game> p, Predicate<Game> q) { this.p = p; this.q = q; }
+		public Unless(Predicate<Game> p, Predicate<Game> q) { this.p = p; this.q = q; history = new List<bool>(); }
 
 		public override bool Test(Game g)
 		{
@@ -62,9 +69,73 @@ namespace STVRogue.GameLogic
 				verdict = !previous || (previous && (p(g) || q(g)));
 			}
 			else
-				verdict = p(g) && !q(g);
+				verdict = p(g) || q(g);
 			history.Add(p(g) && !q(g));
 			return verdict;
+		}
+	}
+
+	public class PackMovementLastZone : Specification
+	{
+		Unless unless;
+		Predicate<Game> playerLastZone = (Q => Q.dungeon.zone[Q.dungeon.zone.Count].Contains(Q.player.location));
+		Predicate<Pack> validPos = (P => (P.location == previousPos[P]) || (P.location == allowedPos[P]));
+		static Dictionary<Pack, Node> previousPos, allowedPos, currentPos;
+
+		public PackMovementLastZone()
+		{
+			Predicate<Game> p = (P => playerLastZone(P) && allPacksOk());
+			Predicate<Game> q = (Q => !playerLastZone(Q));
+			unless = new Unless(p, q);
+		}
+		
+		private bool allPacksOk()
+		{
+			bool res = true;
+			foreach (Pack pack in currentPos.Keys)
+			{
+				res = res && validPos(pack);
+			}
+			return res;
+		}
+
+		private Dictionary<Pack, Node> fillPos(Game g)
+		{
+			Dictionary<Pack,Node> res = new Dictionary<Pack, Node>();
+			List<Node> zone = g.dungeon.zone[g.dungeon.zone.Count()];
+			foreach (Node n in zone)
+			{
+				foreach (Pack pack in n.packs)
+				{
+					res[pack] = n;
+				}
+			}
+			return res;
+		}
+		private void fillAllowed(Game g)
+		{
+			allowedPos = new Dictionary<Pack, Node>();
+			foreach (Pack pack in previousPos.Keys)
+			{
+				Node next = g.dungeon.shortestpath(previousPos[pack], g.player.location).First();
+				allowedPos[pack] = next;
+			}
+		}
+
+		private void setup(Game g)
+		{
+			previousPos = fillPos(g);
+			fillAllowed(g);
+		}
+
+		public override bool Test(Game g)
+		{
+			currentPos = fillPos(g);
+			if (previousPos == null) setup(g);
+			bool res = unless.Test(g);
+			previousPos = currentPos;
+			fillAllowed(g);
+			return res;
 		}
 	}
 }

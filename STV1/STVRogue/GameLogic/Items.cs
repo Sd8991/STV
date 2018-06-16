@@ -7,7 +7,9 @@ using STVRogue.Utils;
 
 namespace STVRogue.GameLogic
 {
-    public class Item
+
+	[Serializable]
+	public class Item
     {
         public String id;
         public Boolean used = false;
@@ -29,7 +31,8 @@ namespace STVRogue.GameLogic
         }
     }
 
-    public class HealingPotion : Item
+	[Serializable]
+	public class HealingPotion : Item
     {
         public uint HPvalue;
 
@@ -47,7 +50,8 @@ namespace STVRogue.GameLogic
         }
     }
 
-    public class Crystal : Item
+	[Serializable]
+	public class Crystal : Item
     {
         public Crystal(String id) : base(id) { }
         override public void use(Player player)

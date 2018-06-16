@@ -136,8 +136,8 @@ namespace STVRogue.GameLogic
             Pack pack = new Pack("pack", 1);
             Pack pack2 = new Pack("pack2", 1);
             List<Command> Queue = new List<Command>();
-            Queue.Add(new AttackCommand(pack.members[0]));
-            Queue.Add(new MoveCommand(dungeon.zone[1][1]));
+            Queue.Add(new AttackCommand(pack.members[0].id));
+            Queue.Add(new MoveCommand(0));
             TestPlayer P = new TestPlayer(Queue);
             pack.members[0].HP = 6;
             pack2.members[0].HP = 1;
