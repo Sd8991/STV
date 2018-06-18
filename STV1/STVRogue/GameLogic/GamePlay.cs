@@ -20,7 +20,7 @@ namespace STVRogue.GameLogic
 	{
 		public RecordGamePlay(Game g)
 		{			
-			initial = new Game(g.getDificultitylevel,g.getNodeCapcityMultiplier,g.getNumberOfMonsters,g.GetSeed);
+			//initial = new Game(g.getDificultitylevel,g.getNodeCapcityMultiplier,g.getNumberOfMonsters,g.GetSeed);
 			//TODO: make method to check wether 2 games are equel
 			//if (g != initial)
 				//throw new Exception("Could not recreate same game instance based on parameters");

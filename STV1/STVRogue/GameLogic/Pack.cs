@@ -69,6 +69,7 @@ namespace STVRogue.GameLogic
                 Logger.log("Pack " + id + " is trying to move to a full node " + u.id + ", but this would cause the node to exceed its capacity. Rejected.");
                 return;
             }
+            location.packs.Remove(this);
             location = u;
             u.packs.Add(this);          
         }
@@ -88,7 +89,7 @@ namespace STVRogue.GameLogic
             }
             if (location is Bridge) // --->
             {
-                if (!(location as Bridge).GetToNodes.Contains(u)) return false;
+                if ((location as Bridge).GetToNodes.Contains(u)) return false;
             }
             return true;
         }

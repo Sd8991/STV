@@ -143,6 +143,11 @@ namespace STVRogue.GameLogic
                 */
                 accelerated = false;
             }
+            if (foe_.pack.members.Count == 0)
+            {
+                location.packs.Remove(foe_.pack);
+                Logger.log(foe_.pack.id + " Wiped Out!");
+            }            
         }
     }
 

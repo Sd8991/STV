@@ -107,7 +107,7 @@ namespace STVRogue.GameLogic
                                 drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
                         }
                         else
-                            drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = '*';
+                            drawPlot[x + (9 + 3) * node.depth, y + 2 + 10 * node.height] = '*';
                     }
                 int nbC = 0;
                 for (int i = 0; i < node.neighbors.Count; i++)

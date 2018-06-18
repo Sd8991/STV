@@ -63,7 +63,7 @@ namespace STVRogue.GameLogic
 
 			for (int i = 1; i < l; i++)
 			{
-				int rMax = (int)dungeon.M;
+				int rMax = (int)dungeon.M + 1;
 				List<Node> curZone = dungeon.zone[i];
 				int monstersThisZone = (2*i*monsters)/(int)((dungeon.difficultyLevel+2)*(dungeon.difficultyLevel+1));
 				if(monstersThisZone>monstersLeft)
