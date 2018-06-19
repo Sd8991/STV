@@ -78,6 +78,28 @@ namespace STVRogue.GameLogic
 		}
 	}
 
+	public class Allerted : Specification
+	{
+		Predicate<Node> pNodes = (N => Specification.AllPacksInNode(N, (P => P.rAlert)));
+		Unless unless;
+		int zone;
+
+		public Allerted()
+		{
+			zone = 1;
+			Predicate<Game> p = (G => G.player.inCombat || Specification.AllNodesInzone(G.dungeon.zone[zone], pNodes));
+			Predicate<Game> q = (G => G.player.zone != zone);
+			unless = new Unless(p, q);
+		}
+
+		public override bool Test(Game g)
+		{
+			bool res = unless.Test(g);
+			zone = g.player.zone;
+			return res;
+		}
+	}
+
 	public class PackMovementLastZone : Specification
 	{
 		Unless unless;
