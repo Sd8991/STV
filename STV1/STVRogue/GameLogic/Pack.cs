@@ -97,10 +97,16 @@ namespace STVRogue.GameLogic
         public Node chooseDestination(Player p, Random rnd)
         {
             List<Node> dest = new List<Node>();
-            if (!rLastZone) dest.Add(location); //pack can't stand still if rLastZone is active
+            if (!rLastZone)
+				dest.Add(location); //pack can't stand still if rLastZone is active
             if (!rLastZone && !rAlert)          //free movement if none of the rules apply
-                foreach (Node n in location.neighbors) if (rZone(n)) dest.Add(n);
-            else dest.Add(dungeon.shortestpath(location, p.location)[0]); //add direction of player if either rule applies
+			{
+                foreach (Node n in location.neighbors)
+					if (rZone(n))
+						dest.Add(n);
+			}
+            else
+				dest.Add(dungeon.shortestpath(location, p.location)[0]); //add direction of player if either rule applies
             int destIndex = rnd.Next(dest.Count - 1);
             return dest[destIndex];
         }

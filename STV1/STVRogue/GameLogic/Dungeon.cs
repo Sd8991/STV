@@ -142,7 +142,8 @@ namespace STVRogue.GameLogic
 			zone[level] = new List<Node>();
 			for (int i = 0; i < subgraph.Length; i++)
 			{
-				zone[level].Add(subgraph[i]);
+				if(subgraph[i] != entryNode)
+					zone[level].Add(subgraph[i]);
 			}
 			zone[level].Add(endNode);
 			zone[level].Remove(entryNode);

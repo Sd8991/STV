@@ -164,7 +164,10 @@ namespace STVRogue.GameLogic
                         }
                     }
                 }
-                foreach (Pack p in toMove) p.move(p.chooseDestination(player, r));
+                foreach (Pack p in toMove)
+				{
+					p.move(p.chooseDestination(player, r));
+				}
             }
             ui.drawUI(dungeon, player);
             return true;
