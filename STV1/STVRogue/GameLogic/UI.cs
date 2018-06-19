@@ -249,8 +249,10 @@ namespace STVRogue.GameLogic
                 counter++;
             }
             Console.WriteLine();
+            safe = true;
             if (p.location.contested(p))
             {
+                safe = false;
                 Logger.log("YOU ARE IN COMBAT! DEFEAT OR ROUT THE MONSTERS!");
                 Logger.log("Enemies: ");
                 foreach (Pack pack in p.location.packs)
@@ -259,7 +261,6 @@ namespace STVRogue.GameLogic
             }
             else
             {
-                safe = true;
                 foreach (Node nb in p.location.neighbors)
                     if (nb.contested(p))
                     {
