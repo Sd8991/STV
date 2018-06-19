@@ -16,7 +16,7 @@ namespace STVRogue.GameLogic
 			}
 			return plays;
 		}
-		static string[] files = new[] {"Test.dat"};//TODO: fill this with real files
+		static string[] files = new[] {"Test.dat", "OneFight.dat" };//TODO: fill this with real files
 		
 		[TestMethod]
 		public void test_player_hp_never_Negative()
@@ -57,6 +57,17 @@ namespace STVRogue.GameLogic
 			foreach (ReplayGamePlay gp in plays)
 			{
 				Assert.IsTrue(gp.replay(new PackMovementLastZone()));
+			}
+		}
+
+		[TestMethod]
+		public void test_alerted()
+		{
+
+			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
+			foreach (ReplayGamePlay gp in plays)
+			{
+				Assert.IsTrue(gp.replay(new Allerted()));
 			}
 		}
 	}
