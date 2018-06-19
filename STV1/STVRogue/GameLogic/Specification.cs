@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using STVRogue.Utils;
 
 namespace STVRogue.GameLogic
 {
@@ -16,7 +17,7 @@ namespace STVRogue.GameLogic
 			foreach (int key in g.dungeon.zone.Keys)
 			{
 				List<Node> zone = g.dungeon.zone[key];
-				AllNodesInzone(zone, p);
+				res = res && AllNodesInzone(zone, p);
 			}
 			return res;
 		}
@@ -37,6 +38,8 @@ namespace STVRogue.GameLogic
 			foreach(Pack pack in n.packs)
 			{
 				res = res && p(pack);
+				if (res == false)
+					Logger.log($"id:{pack.id} location:{pack.location.id} zone:{pack.zone}");
 			}
 			return res;
 		}
