@@ -48,6 +48,7 @@ namespace STVRogue.GameLogic
         public Player()
         {
             id = "player";
+            name = "Henk Henkson";
             AttackRating = 5;
             HP = HPbase;
         }

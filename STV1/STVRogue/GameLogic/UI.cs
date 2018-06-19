@@ -11,125 +11,207 @@ namespace STVRogue.GameLogic
     {
         char[,] drawPlot;
         List<Node> discoveredNodes = new List<Node>();
-        public Dictionary<int, int> heightCounter = new Dictionary<int, int>();
-        public Dictionary<Tuple<int, int>, List<Node>> DepthHeight = new Dictionary<Tuple<int, int>, List<Node>>();
+        string mapRow;
+        bool safe;
 
         public UI(Dungeon d, Player p)
         {
-            p.location.depth = 0;
-            p.location.height = 0;
-            heightCounter[p.location.depth] = p.location.height;
-            try { DepthHeight[new Tuple<int, int>(p.zone, p.location.depth)].Add(p.location); }
-            catch { DepthHeight.Add(new Tuple<int, int>(p.zone, p.location.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, p.location.depth)].Add(p.location); }
             discoveredNodes.Add(p.location);
         }
 
         public void drawDungeon(Dungeon d, Player p)
         {
-            List<Node> realNb = new List<Node>();
-            drawPlot = new char[Console.LargestWindowWidth, 51];
-            for (int i = 0; i < Console.LargestWindowWidth; i++)
+            drawPlot = new char[31, 24];
+            for (int x = 0; x < 31; x++)
             {
-                drawPlot[i, 0] = '#';
-                drawPlot[i, 50] = '#';
+                drawPlot[x, 0] = '='; //upper boundary
+                drawPlot[x, 23] = '='; //lower boundary
             }
 
-            foreach (Node nb in p.location.neighbors)
+            //player location node
+            for (int x = 10; x <= 17; x++)
             {
-                nb.depth = Math.Min(nb.depth, p.location.depth + 1);
-                if (!discoveredNodes.Contains(nb))
+                for (int y = 9; y <= 14; y++)
                 {
-                    discoveredNodes.Add(nb);
-                    try { nb.height = heightCounter[nb.depth]; }
-                    catch { heightCounter[nb.depth] = 0; nb.height = heightCounter[nb.depth]; }
-                    try { DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
-                    catch { DepthHeight.Add(new Tuple<int, int>(p.zone, nb.depth), new List<Node>()); DepthHeight[new Tuple<int, int>(p.zone, nb.depth)].Add(nb); }
-                    heightCounter[nb.depth] += 1;
+                    if (!(x > 10 && x < 17 && y > 9 && y < 14))
+                        drawPlot[x, y] = '#';
+                    if (x == 13 && y == 11)
+                        drawPlot[x, y] = 'P';
+                }
+                for (int i = 0; i < p.location.neighbors.Count; i++)
+                    drawPlot[16, 10 + i] = (i + 1).ToString()[0];
+
+                if (p.location.id == "startNode")
+                {
+                    drawPlot[11, 13] = 'S';
+                }
+                else if (p.location is Bridge)
+                {
+                    drawPlot[11, 13] = 'B';
+                    drawPlot[12, 13] = p.location.id.Split(' ')[1][0];
+                }
+                else
+                {
+                    for (int j = 0; j < p.location.id.Count(); j++)
+                        drawPlot[11 + j, 13] = p.location.id[j];
                 }
             }
+            //
 
-            char nodeNr;
-            for (int a = 0; a <= 8; a++)
-                for (int b = 0; b <= 8; b++)
+            //neighbour 1 (LB)
+            if (p.location.neighbors.Count >= 1)
+            {
+                for (int x = 2; x <= 9; x++)
                 {
-                    if (a > 0 && a < 8 && b > 0 && b < 8)
+                    for (int y = 2; y <= 7; y++)
                     {
-                        if (p.location.id == "startNode")
-                            nodeNr = 'S';
-                        else if (p.location.id.Contains("bridge"))
-                            nodeNr = 'B';
-                        else nodeNr = p.location.id.Split('_')[1][0];
-                        if (b == 1 && a == 1)
-                        {
-                            for (int j = 0; j < p.location.neighbors.Count; j++)
-                                if (!realNb.Contains(p.location.neighbors[j]))
-                                    realNb.Add(p.location.neighbors[j]);
-                            for (int i = 0; i < realNb.Count; i++)
-                                if (realNb[i] == p.location)
-                                {
-                                    drawPlot[b + (9 + 3) * p.location.depth, a + 3 + 10 * p.location.height] = (i + 1).ToString().ToCharArray()[0];
-                                    break;
-                                }
-                        }
-                        if (b == 1 && a == 6)
-                            drawPlot[b + (9 + 3) * p.location.depth, a + 3 + 10 * p.location.height] = nodeNr;
+                        if (!(x > 2 && x < 9 && y > 2 && y < 7))
+                            drawPlot[x, y] = '#';
+                    }
+                    if (p.location.neighbors[0].packs.Count > 0)
+                        drawPlot[5, 5] = '!';
+
+                    drawPlot[3, 3] = '1';
+
+                    for (int i = 0; i < p.location.neighbors[0].neighbors.Count; i++)
+                        drawPlot[8, 3 + i] = (i + 1).ToString()[0];
+
+                    if (p.location.neighbors[0].id == "startNode")
+                    {
+                        drawPlot[3, 6] = 'S';
+                    }
+                    else if (p.location.neighbors[0] is Bridge)
+                    {
+                        drawPlot[3, 6] = 'B';
+                        drawPlot[4, 6] = p.location.neighbors[0].id.Split(' ')[1][0];
                     }
                     else
-                        drawPlot[b + (9 + 3) * p.location.depth, a + 3 + 10 * p.location.height] = '*';
-                    drawPlot[4 + (9 + 3) * p.location.depth, 4 + 3 + 10 * p.location.height] = 'P';
-                }
-
-            foreach (Node node in p.location.neighbors)
-            {
-                for (int y = 0; y <= 8; y++)
-                    for (int x = 0; x <= 8; x++)
                     {
-                        if (y > 0 && y < 8 && x > 0 && x < 8)
-                        {
-                            if (node.id == "startNode")
-                                nodeNr = 'S';
-                            else if (node.id.Contains("bridge"))
-                                nodeNr = 'B';
-                            else nodeNr = node.id.Split('_')[1][0];
-                            if (x == 1 && y == 1)
-                            {
-                                for (int j = 0; j < p.location.neighbors.Count; j++)
-                                    if (!realNb.Contains(p.location.neighbors[j]))
-                                        realNb.Add(p.location.neighbors[j]);
-                                for (int i = 0; i < realNb.Count; i++)
-                                    if (realNb[i] == node)
-                                    {
-                                        drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = (i + 1).ToString().ToCharArray()[0];
-                                        break;
-                                    }
-                            }
-                            if (x == 1 && y == 6)
-                                drawPlot[x + (9 + 3) * node.depth, y + 3 + 10 * node.height] = nodeNr;
-                        }
-                        else
-                            drawPlot[x + (9 + 3) * node.depth, y + 2 + 10 * node.height] = '*';
+                        for (int j = 0; j < p.location.neighbors[0].id.Count(); j++)
+                            drawPlot[3 + j, 6] = p.location.neighbors[0].id[j];
                     }
-                int nbC = 0;
-                for (int i = 0; i < node.neighbors.Count; i++)
+                }
+            }
+            //
+
+            //neighbour 2 (RB)
+            if (p.location.neighbors.Count >= 2)
+            {
+                for (int x = 18; x <= 25; x++)
                 {
-                    if (node.neighbors[i].id == "startNode")
-                        nodeNr = 'S';
-                    else if (node.neighbors[i].id.Contains("bridge"))
-                        nodeNr = 'B';
+                    for (int y = 2; y <= 7; y++)
+                    {
+                        if (!(x > 18 && x < 25 && y > 2 && y < 7))
+                            drawPlot[x, y] = '#';
+                    }
+                    if (p.location.neighbors[1].packs.Count > 0)
+                        drawPlot[21, 5] = '!';
+
+                    drawPlot[19, 3] = '2';
+
+                    for (int i = 0; i < p.location.neighbors[1].neighbors.Count; i++)
+                        drawPlot[24, 3 + i] = (i + 1).ToString()[0];
+
+                    if (p.location.neighbors[1].id == "startNode")
+                    {
+                        drawPlot[19, 6] = 'S';
+                    }
+                    else if (p.location.neighbors[1] is Bridge)
+                    {
+                        drawPlot[19, 6] = 'B';
+                        drawPlot[20, 6] = p.location.neighbors[1].id.Split(' ')[1][0];
+                    }
                     else
                     {
-                        string temp = (i + 1).ToString();
-                        nodeNr = temp.ToCharArray()[0];
+                        for (int j = 0; j < p.location.neighbors[1].id.Count(); j++)
+                            drawPlot[19 + j, 6] = p.location.neighbors[1].id[j];
                     }
-                    drawPlot[7 + (9 + 3) * node.depth, nbC * 2 + 4 + 10 * node.height] = nodeNr;
-                    nbC++;
                 }
-                if (node.packs.Count > 0)
-                    drawPlot[4 + (9 + 3) * node.depth, 4 * 2 + 4 + 10 * node.height] = '!';
             }
-            for (int y = 0; y < 51; y++)
-                for (int x = 0; x < Console.LargestWindowWidth; x++)
-                    Console.Write(drawPlot[x, y]);
+            //
+
+            //neighbour 3 (LO)
+            if (p.location.neighbors.Count >= 3)
+            {
+                for (int x = 2; x <= 9; x++)
+                {
+                    for (int y = 15; y <= 20; y++)
+                    {
+                        if (!(x > 2 && x < 9 && y > 15 && y < 20))
+                            drawPlot[x, y] = '#';
+                    }
+                    if (p.location.neighbors[2].packs.Count > 0)
+                        drawPlot[5, 18] = '!';
+
+                    drawPlot[3, 16] = '3';
+
+                    for (int i = 0; i < p.location.neighbors[2].neighbors.Count; i++)
+                        drawPlot[8, 16 + i] = (i + 1).ToString()[0];
+
+                    if (p.location.neighbors[2].id == "startNode")
+                    {
+                        drawPlot[3, 19] = 'S';
+                    }
+                    else if (p.location.neighbors[2] is Bridge)
+                    {
+                        drawPlot[16, 19] = 'B';
+                        drawPlot[17, 19] = p.location.neighbors[2].id.Split(' ')[1][0];
+                    }
+                    else
+                    {
+                        for (int j = 0; j < p.location.neighbors[2].id.Count(); j++)
+                            drawPlot[3 + j, 19] = p.location.neighbors[2].id[j];
+                    }
+                }
+            }
+            //
+
+            //neighbour 4 (RO)
+            if (p.location.neighbors.Count == 4)
+            {
+                for (int x = 18; x <= 25; x++)
+                {
+                    for (int y = 15; y <= 20; y++)
+                    {
+                        if (!(x > 18 && x < 25 && y > 15 && y < 20))
+                            drawPlot[x, y] = '#';
+                    }
+                    if (p.location.neighbors[3].packs.Count > 0)
+                        drawPlot[21, 18] = '!';
+
+                    drawPlot[19, 16] = '4';
+
+                    for (int i = 0; i < p.location.neighbors[3].neighbors.Count; i++)
+                        drawPlot[24, 16 + i] = (i + 1).ToString()[0];
+
+                    if (p.location.neighbors[3].id == "startNode")
+                    {
+                        drawPlot[19, 19] = 'S';
+                    }
+                    else if (p.location.neighbors[3] is Bridge)
+                    {
+                        drawPlot[19, 19] = 'B';
+                        drawPlot[20, 6] = p.location.neighbors[3].id.Split(' ')[1][0];
+                    }
+                    else
+                    {
+                        for (int j = 0; j < p.location.neighbors[3].id.Count(); j++)
+                            drawPlot[19 + j, 19] = p.location.neighbors[3].id[j];
+                    }
+                }
+            }
+            //
+
+            for (int j = 0; j < 24; j++)
+            {
+                mapRow = "";
+                for (int i = 0; i < 31; i++)
+                {
+                    mapRow += drawPlot[i, j];
+                }
+                Console.WriteLine(mapRow);
+            }
+
         }
 
         public void drawUI(Dungeon d, Player p)
@@ -169,11 +251,28 @@ namespace STVRogue.GameLogic
             Console.WriteLine();
             if (p.location.contested(p))
             {
+                Logger.log("YOU ARE IN COMBAT! DEFEAT OR ROUT THE MONSTERS!");
                 Logger.log("Enemies: ");
                 foreach (Pack pack in p.location.packs)
                     foreach (Monster m in pack.members)
                         Logger.log(m.name + " (" + m.id + "), HP: " + m.HP);
             }
+            else
+            {
+                safe = true;
+                foreach (Node nb in p.location.neighbors)
+                    if (nb.contested(p))
+                    {
+                        Logger.log("This room seems to be safe, but you feel an evil presence in a nearby room...");
+                        safe = false;
+                        break;
+                    }
+            }
+            if (safe)
+            {
+                Logger.log("This room seems to be safe...");
+            }
+
             Logger.log("Choose your action: ");
         }
     }
