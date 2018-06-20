@@ -13,6 +13,7 @@ namespace STVRogue.GameLogic
         List<Node> discoveredNodes = new List<Node>();
         string mapRow;
         bool safe;
+        List<Item> checkBag = new List<Item>();
 
         public UI(Dungeon d, Player p)
         {
@@ -217,7 +218,7 @@ namespace STVRogue.GameLogic
         public void drawUI(Dungeon d, Player p)
         {
             Logger.log("Name: " + p.name + " -- Player HP: " + p.HP + " -- ATK: " + p.AttackRating + " -- Accelerated: " + p.accelerated);
-            Logger.log("Current Zone: " + p.zone + "Current Node: " + p.location.id + " -- KillPoints: " + p.KillPoint);
+            Logger.log("Current Zone: " + p.zone + " -- Current Node: " + p.location.id + " -- KillPoints: " + p.KillPoint);
             int totalPackHP = 0;
             bool packsAlerted = false;
             foreach (Pack pack in p.location.packs)
@@ -274,7 +275,19 @@ namespace STVRogue.GameLogic
                 Logger.log("This room seems to be safe...");
             }
 
+            foreach (Item i in p.bag)
+            {
+                if (!checkBag.Contains(i))
+                    Logger.log("You have picked up an item: " + i.id);
+            }
+            foreach (Item j in checkBag)
+            {
+                if (!p.bag.Contains(j))
+                    Logger.log("You have used an item: " + j.id);
+            }
+
             Logger.log("Choose your action: ");
+            checkBag = p.bag;
         }
     }
 }

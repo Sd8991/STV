@@ -52,17 +52,33 @@ namespace STVRogue
 			switch (parse[0])
 			{
 				case "Move":
-					index = int.Parse(parse[1]) - 1;
-					return new MoveCommand(index);
+                        index = int.Parse(parse[1]) - 1;
+                        return new MoveCommand(index);
 				case "Attack":
-					string[] pacMon = parse[1].Split('_');//split into pack id and monster index
-					index = int.Parse(pacMon[1]);
-					Pack pack = player.location.packs.Find(p => p.id == pacMon[0]);//find selected pack
-					Creature target = pack.members[index];//find selected monster
-					return new AttackCommand(target.id);
+                        string[] pacMon = parse[1].Split('_');//split into pack id and monster index
+                        index = int.Parse(pacMon[1]);
+                        Pack pack = player.location.packs.Find(p => p.id == pacMon[0]);//find selected pack
+                        Creature target = pack.members[index];//find selected monster
+                    try
+                    {
+                        return new AttackCommand(target.id);
+                    }
+                    catch
+                    {
+                        Logger.log("Invalid monster, choose again");
+                        return ParseInput(Console.ReadLine(), player);
+                    }
 				case "Use":
-					index = int.Parse(parse[1]);
-					return new ItemCommand(player.bag[index]);
+                    try
+                    {
+                        index = int.Parse(parse[1]);
+                        return new ItemCommand(player.bag[index]);
+                    }
+                    catch
+                    {
+                        Logger.log("Invalid item, choose again");
+                        return ParseInput(Console.ReadLine(), player);
+                    }
 				case "Nothing":
 					return new Command();
 				default:

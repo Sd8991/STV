@@ -45,9 +45,10 @@ namespace STVRogue.GameLogic
 			r = dungeon.r;
             int monsterHP = 0;
 			PopulateDungeon((int)numberOfMonsters, ref monsterHP);
-            DistributePotions(player, numberOfMonsters, (uint)monsterHP);
+            DistributePotions(player, (uint)monsterHP);
             player.location = dungeon.startNode;
             player.dungeon = dungeon;
+            player.bag.Add(new HealingPotion("Extreme Potion of Pitiful Healing"));
             ui = new UI(dungeon, player);
         }
 
@@ -111,13 +112,13 @@ namespace STVRogue.GameLogic
 			}
 		}
 
-        public uint DistributePotions(Player P, uint monsterHP, uint potionHP)
+        public uint DistributePotions(Player P, uint monsterHP)
         {
-            DistributePotions(P, monsterHP, potionHP, dungeon);
+            DistributePotions(P, monsterHP, dungeon);
             return this.potionHP;
         }
 
-        public void DistributePotions(Player P, uint monsterHP, uint potionHP, Dungeon D)
+        public void DistributePotions(Player P, uint monsterHP, Dungeon D)
         {
             this.potionHP = (uint)P.HP;
             HealingPotion pot;
@@ -132,6 +133,7 @@ namespace STVRogue.GameLogic
                 {
                     pots.Add(pot);
                     this.potionHP += pot.HPvalue;
+                    pot.id += '(' + pot.HPvalue + ')';
                 }
                 else break;
             }

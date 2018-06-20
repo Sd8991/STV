@@ -326,9 +326,8 @@ namespace STVRogue.GameLogic
             P.dungeon = d;
             game.dungeon = d;
             game.dungeon.zone = d.zone;
-            uint potionHP = 0;
             uint monsterHP = 300;
-            uint newPotionHP = game.DistributePotions(P, monsterHP, potionHP);
+            uint newPotionHP = game.DistributePotions(P, monsterHP);
 			Assert.IsTrue(newPotionHP <= 0.8f * monsterHP);
         }
 	}

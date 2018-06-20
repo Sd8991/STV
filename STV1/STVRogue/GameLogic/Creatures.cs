@@ -14,6 +14,8 @@ namespace STVRogue.GameLogic
         public int HP;
         public uint AttackRating = 1;
         public Node location;
+        public int crystalChance = 100;
+
         public Creature() { }
         virtual public void Attack(Creature foe)
         {
@@ -40,7 +42,7 @@ namespace STVRogue.GameLogic
     {
         public Dungeon dungeon;
         public int zone = 1;
-        public int HPbase = 100;
+        public int HPbase = 10;
         public Boolean accelerated = false;
         public bool inCombat = false;
         public uint KillPoint = 0;
@@ -148,6 +150,12 @@ namespace STVRogue.GameLogic
             {
                 location.packs.Remove(foe_.pack);
                 Logger.log(foe_.pack.id + " Wiped Out!");
+                int cDrop = RandomGenerator.rnd.Next(0, 100);
+                if (cDrop <= crystalChance)
+                {
+                    bag.Add(new Crystal("Magic Crystal"));
+                    Logger.log("A pack dropped a Crystal!");
+                }
             }            
         }
     }
