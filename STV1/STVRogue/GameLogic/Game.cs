@@ -48,7 +48,6 @@ namespace STVRogue.GameLogic
             DistributePotions(player, (uint)monsterHP);
             player.location = dungeon.startNode;
             player.dungeon = dungeon;
-            player.bag.Add(new HealingPotion("Extreme Potion of Pitiful Healing"));
             ui = new UI(dungeon, player);
         }
 

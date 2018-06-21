@@ -26,6 +26,11 @@ namespace STVRogue
                     Logger.log("VICTORY!");
                     break;
                 }
+                if (game.player.HP <= 0)
+                {
+                    Logger.log("YOU DIED");
+                    break;
+                }
                 game.ui.drawDungeon(game.dungeon, game.player);
                 game.ui.drawUI(game.dungeon, game.player);
                 string input = Console.ReadLine();
