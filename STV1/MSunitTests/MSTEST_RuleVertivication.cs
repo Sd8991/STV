@@ -16,7 +16,7 @@ namespace STVRogue.GameLogic
 			}
 			return plays;
 		}
-		static string[] files = new[] {"Test.dat", "OneFight.dat" };//TODO: fill this with real files
+		static string[] files = new[] {"CompletePlayThrough.dat" };//TODO: fill this with real files
 		
 		[TestMethod]
 		public void test_player_hp_never_Negative()
@@ -24,7 +24,7 @@ namespace STVRogue.GameLogic
 			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
 			foreach (ReplayGamePlay gp in plays)
 			{
-				Assert.IsTrue(gp.replay(new Always(G => G.player.HP >= 0)));
+				Assert.IsTrue(gp.replay(new Always(G => G.player.HP >= 0)), gp.FileName + " failed");
 			}
 		}
 
@@ -35,7 +35,7 @@ namespace STVRogue.GameLogic
 			foreach (ReplayGamePlay gp in plays)
 			{
 				Always al = new Always(G => Specification.AllNodes(G, (N => N.nMonsters() <= G.dungeon.M * (G.dungeon.level(N) + 1))));
-				Assert.IsTrue(gp.replay(al));
+				Assert.IsTrue(gp.replay(al),gp.FileName + " failed");
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace STVRogue.GameLogic
 			foreach (ReplayGamePlay gp in plays)
 			{
 				Always al = new Always(G => Specification.AllPacks(G, (P => (G.dungeon.zone[P.zone]).Contains(P.location))));
-				Assert.IsTrue(gp.replay(al));
+				Assert.IsTrue(gp.replay(al), gp.FileName + " failed");
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace STVRogue.GameLogic
 			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
 			foreach (ReplayGamePlay gp in plays)
 			{
-				Assert.IsTrue(gp.replay(new PackMovementLastZone()));
+				Assert.IsTrue(gp.replay(new PackMovementLastZone()), gp.FileName + " failed");
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace STVRogue.GameLogic
 			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
 			foreach (ReplayGamePlay gp in plays)
 			{
-				Assert.IsTrue(gp.replay(new Allerted()));
+				Assert.IsTrue(gp.replay(new Allerted()), gp.FileName + " failed");
 			}
 		}
 	}

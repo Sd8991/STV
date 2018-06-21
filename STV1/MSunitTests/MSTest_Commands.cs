@@ -49,7 +49,7 @@ namespace STVRogue.GameLogic
 		public void MSTest_ItemCommand()
 		{
 			Item item = new HealingPotion("hpPotion");
-			Command itemCom = new ItemCommand(item);
+			Command itemCom = new ItemCommand(0);
 			uint healingpower = (item as HealingPotion).HPvalue;
 			Assert.IsTrue(itemCom.ToString() == "use " + item.GetType().Name + " " + item.id);
 			Player player = new Player();

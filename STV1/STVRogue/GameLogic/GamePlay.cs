@@ -55,10 +55,13 @@ namespace STVRogue.GameLogic
 	public class ReplayGamePlay :GamePlay
 	{
 		int currentTurn,nTurns;
+		string fileName;
+		public string FileName { get { return fileName; } }
 		Game playing;
 
 		public ReplayGamePlay(string filename, string path = "../../../Recordings/")
 		{
+			this.fileName = filename;
 			formatter = new BinaryFormatter();
 			if (File.Exists(path + filename))
 			{
