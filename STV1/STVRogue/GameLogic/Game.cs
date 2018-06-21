@@ -171,7 +171,6 @@ namespace STVRogue.GameLogic
 					p.move(p.chooseDestination(player, r));
 				}
             }
-            ui.drawUI(dungeon, player);
             return true;
         }
     }

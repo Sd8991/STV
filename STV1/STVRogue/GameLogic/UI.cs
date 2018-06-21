@@ -14,6 +14,7 @@ namespace STVRogue.GameLogic
         string mapRow;
         bool safe;
         List<Item> checkBag = new List<Item>();
+        bool packsAlerted;
 
         public UI(Dungeon d, Player p)
         {
@@ -220,12 +221,12 @@ namespace STVRogue.GameLogic
             Logger.log("Name: " + p.name + " -- Player HP: " + p.HP + " -- ATK: " + p.AttackRating + " -- Accelerated: " + p.accelerated);
             Logger.log("Current Zone: " + p.zone + " -- Current Node: " + p.location.id + " -- KillPoints: " + p.KillPoint);
             int totalPackHP = 0;
-            bool packsAlerted = false;
-            foreach (Pack pack in p.location.packs)
-            {
-                packsAlerted = pack.rAlert;
-                totalPackHP += pack.CurrentHP();
-            }
+            foreach (Node node in p.dungeon.zone[p.zone])
+                foreach (Pack pack in node.packs)
+                {
+                    packsAlerted = pack.rAlert;
+                    totalPackHP += pack.CurrentHP();
+                }
             Logger.log("Packs in Zone: " + p.location.packs.Count + " -- Total HP: " + totalPackHP + " -- Alerted: " + packsAlerted);
             Console.Write("** Items: ");
             int counter = 0;
