@@ -72,7 +72,7 @@ namespace STVRogue.GameLogic
 				verdict = !previous || (previous && (p(g) || q(g)));
 			}
 			else
-				verdict = p(g) || q(g);
+				verdict = true;
 			history.Add(p(g) && !q(g));
 			return verdict;
 		}

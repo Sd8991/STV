@@ -14,7 +14,7 @@ namespace STVRogue
     {
         static void Main(string[] args)
         {
-            Game game = new Game(5, 2, 20);
+            Game game = setupGame();
             RecordGamePlay recording = new RecordGamePlay(game);
             int width = Console.LargestWindowWidth;
             int height = Console.LargestWindowHeight;
@@ -36,6 +36,7 @@ namespace STVRogue
                 string input = Console.ReadLine();
                 if (input == "Quit")
                     break;
+
                 Command command = ParseInput(input, game.player);
                 Console.Clear();
                 recording.RecordTurn(command);
@@ -49,6 +50,25 @@ namespace STVRogue
                 recording.saveToFile(filename);
             }
         }
+
+		static Game setupGame()
+		{
+			Logger.log("Give Game Parameters: DifficultyLevel, NodeCapcityMultiplier, NumberOfMonsters, Seed. separeted by spaces or type 'dif' for default values (5 2 20 11)");
+			string input = Console.ReadLine();
+			if (input == "dif")
+				return new Game(5, 2, 20);
+			else
+				try
+				{
+					string[] split = input.Split();
+					return new Game(uint.Parse(split[0]), uint.Parse(split[1]), uint.Parse(split[2]), int.Parse(split[3]));
+				}
+				catch (Exception)
+				{
+					Logger.log("invalidInput");
+					return setupGame();
+				}
+		}
 
         static Command ParseInput(string input, Player player)
         {
@@ -68,7 +88,7 @@ namespace STVRogue
                     string[] pacMon = parse[1].Split('_');//split into pack id and monster index
                     index = int.Parse(pacMon[1]);
                     Pack pack = player.location.packs.Find(p => p.id == pacMon[0]);//find selected pack
-                    Creature target = pack.members[index];//find selected monster
+                    Creature target = pack.members.Find(P => P.id == parse[1]);//find selected monster
                         return new AttackCommand(target.id);
                     
                 case "Use":
