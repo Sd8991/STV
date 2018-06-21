@@ -96,6 +96,8 @@ namespace STVRogue.GameLogic
 		{
 			bool res = unless.Test(g);
 			zone = g.player.zone;
+			if (res == false)
+				Logger.log(zone.ToString());
 			return res;
 		}
 	}
@@ -144,7 +146,8 @@ namespace STVRogue.GameLogic
 			{
 				Node next = g.player.location;
 				bool t = previousPos[pack] != g.player.location;
-				if (t)
+				bool active = g.dungeon.zone[g.dungeon.zone.Keys.Max()].Contains(g.player.location);
+				if (t && active)
 				{
 					next = g.dungeon.shortestpath(previousPos[pack], g.player.location).First();
 				}

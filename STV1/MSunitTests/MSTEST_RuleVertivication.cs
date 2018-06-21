@@ -63,7 +63,6 @@ namespace STVRogue.GameLogic
 		[TestMethod]
 		public void test_alerted()
 		{
-
 			List<ReplayGamePlay> plays = loadSavedGamePLays(files);
 			foreach (ReplayGamePlay gp in plays)
 			{

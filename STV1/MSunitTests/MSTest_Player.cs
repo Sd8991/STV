@@ -136,14 +136,17 @@ namespace STVRogue.GameLogic
         public void MSTest_check_dead_monsters_all_dead()
         {
             Player P = new Player();
+			Node n = new Node();
             Pack pack = new Pack("pack", 2);
+			P.location = n;
+			pack.location = n;
             pack.members[0].HP = 1;
             pack.members[1].HP = 1;
             Monster M1 = pack.members[0];
             Monster M2 = pack.members[1];
             P.accelerated = true;
             P.Attack(pack.members[0]);
-            Assert.IsTrue(pack.CurrentHP() == 0);
+            Assert.IsTrue(pack.CurrentHP() == 0 && !n.packs.Contains(pack));
         }
 
 		[TestMethod]

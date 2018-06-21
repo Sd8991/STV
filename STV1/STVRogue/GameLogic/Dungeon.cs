@@ -35,10 +35,10 @@ namespace STVRogue.GameLogic
         public Dungeon(uint M)
         {
             this.M = M;
-            Node N0 = new Node("N0");
-            Node N1 = new Node("N1");
-            Node N2 = new Node("N2");
-            Node N3 = new Node("N3");      
+            Node N0 = new Node("1_0");
+            Node N1 = new Node("1_1");
+            Node N2 = new Node("1_2");
+            Node N3 = new Node("1_3");      
             N0.connect(N1);
             N0.connect(N2);
             N1.connect(N2);
@@ -205,6 +205,22 @@ namespace STVRogue.GameLogic
 		{
 			if (u == v)
 				throw new ArgumentException("Trying to move to node it's allready in");
+			int z = 0;
+			try
+			{
+				z = int.Parse(u.id.Split('_')[0]);
+			}
+			catch (Exception)
+			{
+				if (u == exitNode)
+					z = zone.Count;
+				else if (u == startNode)
+					z = 1;
+				else if (u is Bridge)
+					z = int.Parse(u.id.Split()[1]);
+				else
+					throw new Exception("couldn't resolve zone");
+			}
 			//Breadth First Search
 			Queue<Node> q = new Queue<Node>();
 			List<Node> seen = new List<Node>();//nodes that are already visited
@@ -220,7 +236,9 @@ namespace STVRogue.GameLogic
 
 				foreach (Node n in subtree_root.neighbors)//add all not fisited neighbors to the queue
 				{
-					if(seen.Contains(n))
+					if (!zone[z].Contains(n))
+						continue;//tries to move out of zone
+					if (seen.Contains(n))
 						continue;//allready found this node, don't add again
 					if(!q.Contains(n))
 					{
@@ -263,7 +281,9 @@ namespace STVRogue.GameLogic
 			{
 				b.disconnect(b.GetFromNodes[i]);
 			}
-			b.toggleAlert(zone[int.Parse(b.id.Split()[1])],false);
+			//int z = int.Parse(b.id.Split()[1]);
+			//b.toggleAlert(zone[z],false);
+			//zone[z].Remove(b);//else node are allerted again if there is a fight on 
         }
 
         /* To calculate the level of the given node. */

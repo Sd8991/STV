@@ -260,7 +260,12 @@ namespace STVRogue.GameLogic
             Player P = new Player();
             P.location = bridge;
             P.dungeon = d;
-            Item x = new Crystal("cryst1");
+			d.zone = new Dictionary<int, List<Node>>();
+			d.zone[4] = new List<Node>();
+			d.zone[4].Add(bridge);
+			d.zone[4].Add(node3);
+			d.zone[4].Add(node4);
+			Item x = new Crystal("cryst1");
             P.bag.Add(x);
             P.use(x);
             Assert.IsTrue(bridge.GetFromNodes.Count == 2);
@@ -286,17 +291,24 @@ namespace STVRogue.GameLogic
 		[TestMethod]
 		public void MSTest_shortestpath()
 		{
-			Node node1 = new Node();
-			Node node2 = new Node();
-			Node node3 = new Node();
-			Node node4 = new Node();
-			Node node5 = new Node();
+			Node node1 = new Node("1_1");
+			Node node2 = new Node("1_2");
+			Node node3 = new Node("1_3");
+			Node node4 = new Node("1_4");
+			Node node5 = new Node("1_5");
 			node2.connect(node1);
 			node2.connect(node3);
 			node4.connect(node1);
 			node4.connect(node5);
 			node5.connect(node3);
 			Dungeon d = new Dungeon();
+			d.zone = new Dictionary<int, List<Node>>();
+			d.zone[1] = new List<Node>();
+			d.zone[1].Add(node1);
+			d.zone[1].Add(node2);
+			d.zone[1].Add(node3);
+			d.zone[1].Add(node4);
+			d.zone[1].Add(node5);
 
 			List<Node> sp = d.shortestpath(node1, node3);
 			List<Node> expectedSp = new List<Node>();
@@ -322,6 +334,8 @@ namespace STVRogue.GameLogic
             RandomGenerator.initializeWithSeed(1);
             Random r = RandomGenerator.rnd;
             Dungeon d = new Dungeon(5);
+			d.r = r;
+			game.r = r;
             Player P = new Player();
             P.dungeon = d;
             game.dungeon = d;

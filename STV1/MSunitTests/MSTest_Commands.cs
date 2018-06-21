@@ -12,13 +12,17 @@ namespace STVRogue.GameLogic
 		[TestMethod]
 		public void MSTest_AttackCommand()
 		{
+			Node n = new Node();
 			Pack pack = new Pack("test", 1);
 			Creature victim = pack.members[0];
 			victim.HP = 8;
 			int innitalHP = victim.HP;
 			Command attCom = new AttackCommand(victim.id);
-			Assert.IsTrue(attCom.ToString() == "attack " + victim.name);
+//			Assert.IsTrue(attCom.ToString() == "attack " + victim.name);
 			Player player = new Player();
+			player.location = n;
+			pack.location = n;
+			n.packs.Add(pack);
 			attCom.ExecuteCommand(player);
 			Assert.IsTrue(victim.HP == Math.Max(0, innitalHP - 5));
 
@@ -51,7 +55,7 @@ namespace STVRogue.GameLogic
 			Item item = new HealingPotion("hpPotion");
 			Command itemCom = new ItemCommand(0);
 			uint healingpower = (item as HealingPotion).HPvalue;
-			Assert.IsTrue(itemCom.ToString() == "use " + item.GetType().Name + " " + item.id);
+			Assert.IsTrue(itemCom.ToString() == "use item " + 0 + " in player bag");
 			Player player = new Player();
 			player.bag.Add(item);
 			player.HP -= 20;

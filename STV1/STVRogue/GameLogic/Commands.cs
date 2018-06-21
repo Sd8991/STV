@@ -57,9 +57,7 @@ namespace STVRogue
             p.location = node;
             p.PickUpItems();
             //if (!p.location.contested(p)) p.inCombat = false; //end combat by fleeing
-            if (p.location.contested(p))    //start combat
-            { p.location.toggleAlert(p.dungeon.zone[p.zone],true);
-            }
+            
         }
 		public override string ToString()
 		{

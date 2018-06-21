@@ -151,25 +151,29 @@ namespace STVRogue.GameLogic
         {
             Logger.log("Player does " + userCommand);
 			userCommand.ExecuteCommand(player);
-            if (player.inCombat) player.location.fight(player, seed, true);
-            else
-            {
-                List<Pack> toMove = new List<Pack>();
-                foreach (List<Node> l in dungeon.zone.Values)
-                {
-                    foreach (Node n in l)
-                    {
-                        foreach (Pack p in n.packs)
-                        {
-                            toMove.Add(p);
-                        }
-                    }
-                }
-                foreach (Pack p in toMove)
+			if (player.inCombat)
+			{
+				player.location.toggleAlert(player.dungeon.zone[player.zone], true);
+				player.location.fight(player, seed, true);
+			}
+			else
+			{
+				List<Pack> toMove = new List<Pack>();
+				foreach (List<Node> l in dungeon.zone.Values)
+				{
+					foreach (Node n in l)
+					{
+						foreach (Pack p in n.packs)
+						{
+							toMove.Add(p);
+						}
+					}
+				}
+				foreach (Pack p in toMove)
 				{
 					p.move(p.chooseDestination(player, r));
 				}
-            }
+			}
             return true;
         }
     }

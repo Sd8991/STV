@@ -20,10 +20,10 @@ namespace STVRogue.GameLogic
         {
             Player P = new Player();
             HealingPotion x = new HealingPotion("pot1");
-            P.HP = 50;
+            P.HP = 1;
             P.bag.Add(x);
             P.use(x);
-            Assert.IsTrue(P.HP == 50 + x.HPvalue);      //Can't call x.HPvalue
+            Assert.IsTrue(P.HP == 1 + x.HPvalue);      //Can't call x.HPvalue
         }
 
         [TestMethod]

@@ -97,7 +97,7 @@ namespace STVRogue.GameLogic
         public Node chooseDestination(Player p, Random rnd)
         {
             List<Node> dest = new List<Node>();
-            if (!rLastZone)
+			if (!rLastZone || (rLastZone && !dungeon.zone[dungeon.zone.Keys.Max()].Contains(p.location)))
 				dest.Add(location); //pack can't stand still if rLastZone is active
             if (!rLastZone && !rAlert)          //free movement if none of the rules apply
 			{
@@ -106,7 +106,15 @@ namespace STVRogue.GameLogic
 						dest.Add(n);
 			}
             else
-				dest.Add(dungeon.shortestpath(location, p.location)[0]); //add direction of player if either rule applies
+				try
+				{
+					dest.Add(dungeon.shortestpath(location, p.location)[0]); //add direction of player if either rule applies
+				}
+				catch (Exception)
+				{
+					dest.Add(location);//shortestpath failed, propably because of disconnect
+				}
+				
             int destIndex = rnd.Next(dest.Count - 1);
             return dest[destIndex];
         }
