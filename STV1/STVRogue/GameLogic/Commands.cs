@@ -33,7 +33,7 @@ namespace STVRogue
 			if (target == null)
 				throw new Exception("target not found");
 			p.Attack(target);
-            if (!p.location.contested(p)) p.inCombat = false; //end combat by winning
+            //if (!p.location.contested(p)) p.inCombat = false; //end combat by winning
 		}
 		public override string ToString()
 		{
@@ -56,11 +56,9 @@ namespace STVRogue
             p.processZone(node);
             p.location = node;
             p.PickUpItems();
-            if (!p.location.contested(p)) p.inCombat = false; //end combat by fleeing
+            //if (!p.location.contested(p)) p.inCombat = false; //end combat by fleeing
             if (p.location.contested(p))    //start combat
-            {
-                p.inCombat = true;
-                if (!p.location.packs[0].rAlert) p.location.toggleAlert(p.dungeon.zone[p.zone]);
+            { p.location.toggleAlert(p.dungeon.zone[p.zone],true);
             }
         }
 		public override string ToString()
@@ -72,18 +70,18 @@ namespace STVRogue
 	[Serializable]
 	public class ItemCommand : Command
 	{
-		private Item item;
-		public ItemCommand(Item item)
+		private int index;
+		public ItemCommand(int index)
 		{
-			this.item = item;
+			this.index = index;
 		}
 		public override void ExecuteCommand(Player p)
 		{
-			p.use(item);
+			p.use(p.bag[index]);
 		}
 		public override string ToString()
 		{
-			return "use " + item.GetType().Name + " " + item.id;
+			return "use item " + index + " in player bag";
 		}
 	}
 }

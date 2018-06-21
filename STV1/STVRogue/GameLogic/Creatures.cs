@@ -44,7 +44,7 @@ namespace STVRogue.GameLogic
         public int zone = 1;
         public int HPbase = 10;
         public Boolean accelerated = false;
-        public bool inCombat = false;
+        public bool inCombat { get { return location.contested(this); } }
         public uint KillPoint = 0;
         public List<Item> bag = new List<Item>();
         public Player()
@@ -68,12 +68,12 @@ namespace STVRogue.GameLogic
         {
             if (n is Bridge && (n as Bridge).GetToNodes.Contains(location))
             {
-                n.toggleAlert(dungeon.zone[zone]);
+                n.toggleAlert(dungeon.zone[zone],false);
                 zone--;
             }
             if (location is Bridge && (location as Bridge).GetToNodes.Contains(n))
             {
-                n.toggleAlert(dungeon.zone[zone]);
+                n.toggleAlert(dungeon.zone[zone],false);
                 zone++;
                 lastZoneCheck();
             }

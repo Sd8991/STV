@@ -75,7 +75,7 @@ namespace STVRogue
                     try
                     {
                         index = int.Parse(parse[1]);
-                        return new ItemCommand(player.bag[index]);
+                        return new ItemCommand(index);
                     }
                     catch
                     {

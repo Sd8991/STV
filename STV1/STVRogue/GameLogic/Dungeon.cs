@@ -203,6 +203,8 @@ namespace STVRogue.GameLogic
         /* Return a shortest path between node u and node v */
         public List<Node> shortestpath(Node u, Node v) 
 		{
+			if (u == v)
+				throw new ArgumentException("Trying to move to node it's allready in");
 			//Breadth First Search
 			Queue<Node> q = new Queue<Node>();
 			List<Node> seen = new List<Node>();//nodes that are already visited
@@ -261,6 +263,7 @@ namespace STVRogue.GameLogic
 			{
 				b.disconnect(b.GetFromNodes[i]);
 			}
+			b.toggleAlert(zone[int.Parse(b.id.Split()[1])],false);
         }
 
         /* To calculate the level of the given node. */
@@ -354,11 +357,11 @@ namespace STVRogue.GameLogic
                     attackPack.Attack(player);
         }
 
-        public void toggleAlert(List<Node> nodes)
+        public void toggleAlert(List<Node> nodes,bool to)
         {
             foreach (Node n in nodes)
                 foreach (Pack p in n.packs)
-                    p.rAlert = !p.rAlert;
+                    p.rAlert = to;
         }
     }
 
