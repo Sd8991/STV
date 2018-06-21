@@ -142,7 +142,12 @@ namespace STVRogue.GameLogic
 			allowedPos = new Dictionary<Pack, Node>();
 			foreach (Pack pack in previousPos.Keys)
 			{
-				Node next = g.dungeon.shortestpath(previousPos[pack], g.player.location).First();
+				Node next = g.player.location;
+				bool t = previousPos[pack] != g.player.location;
+				if (t)
+				{
+					next = g.dungeon.shortestpath(previousPos[pack], g.player.location).First();
+				}
 				allowedPos[pack] = next;
 			}
 		}
