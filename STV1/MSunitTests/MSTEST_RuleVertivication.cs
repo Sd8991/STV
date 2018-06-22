@@ -16,7 +16,11 @@ namespace STVRogue.GameLogic
 			}
 			return plays;
 		}
-		static string[] files = new[] {"FullPlayThrough.dat","PlayerDied.dat" };//TODO: fill this with real files
+		static string[] files = new[] { "FullPlayThrough.dat",
+                                        "PlayerDied.dat",
+                                        "PickUpUsePotion.dat",
+                                        "UsePotionInCombat.dat",
+                                        "CombatMultipleMonsters.dat"};//TODO: fill this with real files
 		
 		[TestMethod]
 		public void test_player_hp_never_Negative()
