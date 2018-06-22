@@ -17,13 +17,14 @@ namespace STVRogue.GameLogic
 			return plays;
 		}
 		static string[] files = new[] {
-			"FullPlayThrough.dat",
-			"PlayerDied.dat",
-			"PickUpUsePotion.dat",
-			"UsePotionInCombat.dat",
-			"CombatMultipleEnemies.dat",
-			"NoCombat.dat",
-			"AllValidUsesOfCrystal.dat"
+			//"FullPlayThrough.dat",
+			//"PlayerDied.dat",
+			//"PickUpUsePotion.dat",
+			//"UsePotionInCombat.dat",
+			//"CombatMultipleEnemies.dat",
+			//"NoCombat.dat",
+			//"AllValidUsesOfCrystal.dat",
+			"TriedToFleeToFullNode.dat"
 		};
 		
 		[TestMethod]
