@@ -88,6 +88,7 @@ namespace STVRogue.GameLogic
 		public void reset()
 		{
 			currentTurn = 0;
+			playing = initial;
 		}
 
 		public void replayTurn()
