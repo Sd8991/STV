@@ -115,7 +115,7 @@ namespace STVRogue.GameLogic
 					dest.Add(location);//shortestpath failed, propably because of disconnect
 				}
 				
-            int destIndex = rnd.Next(dest.Count - 1);
+            int destIndex = rnd.Next(dest.Count);
             return dest[destIndex];
         }
     }
