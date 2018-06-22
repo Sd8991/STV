@@ -84,6 +84,7 @@ namespace STVRogue
                         return ParseInput(Console.ReadLine(), player);
                     }
                     return new MoveCommand(index);
+
                 case "Attack":
                     string[] pacMon = parse[1].Split('_');//split into pack id and monster index
                     index = int.Parse(pacMon[1]);
@@ -95,13 +96,22 @@ namespace STVRogue
                     try
                     {
                         index = int.Parse(parse[1]);
-                        return new ItemCommand(index);
+						string posTarget = "";
+						if (player.inCombat)
+						{
+							string[] posPackMon = parse[2].Split('_');//split into pack id and monster index
+							Pack posPack = player.location.packs.Find(p => p.id == posPackMon[0]);//find selected pack
+							Creature t = posPack.members.Find(P => P.id == parse[2]);//find selected monster
+							posTarget = t.id;
+						}
+                        return new ItemCommand(index, posTarget);
                     }
                     catch
                     {
                         Logger.log("Invalid item, choose again");
                         return ParseInput(Console.ReadLine(), player);
                     }
+
                 case "Nothing":
                     return new Command();
                 default:

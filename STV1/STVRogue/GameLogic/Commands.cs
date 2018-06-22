@@ -1,5 +1,6 @@
 ﻿using System;
 using STVRogue.GameLogic;
+using STVRogue.Utils;
 
 namespace STVRogue
 {
@@ -15,7 +16,7 @@ namespace STVRogue
 	[Serializable]
 	public class AttackCommand : Command
 	{
-		private string targetid;
+		protected string targetid;
 		public AttackCommand(string targetid)
 		{
 			this.targetid = targetid;
@@ -66,16 +67,18 @@ namespace STVRogue
 	}
 
 	[Serializable]
-	public class ItemCommand : Command
+	public class ItemCommand : AttackCommand
 	{
 		private int index;
-		public ItemCommand(int index)
+		public ItemCommand(int index, string target) : base(target)
 		{
 			this.index = index;
 		}
 		public override void ExecuteCommand(Player p)
 		{
 			p.use(p.bag[index]);
+			if (p.inCombat)
+				base.ExecuteCommand(p);
 		}
 		public override string ToString()
 		{
