@@ -20,7 +20,8 @@ namespace STVRogue.GameLogic
                                         "PlayerDied.dat",
                                         "PickUpUsePotion.dat",
                                         "UsePotionInCombat.dat",
-                                        "CombatMultipleMonsters.dat"};//TODO: fill this with real files
+                                        "CombatMultipleMonsters.dat",
+										"AllVallidUsesOfCrystal.dat"};//TODO: fill this with real files
 		
 		[TestMethod]
 		public void test_player_hp_never_Negative()
