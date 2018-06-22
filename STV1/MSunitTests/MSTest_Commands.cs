@@ -52,11 +52,13 @@ namespace STVRogue.GameLogic
 		[TestMethod]
 		public void MSTest_ItemCommand()
 		{
+			Node node = new Node();
 			Item item = new HealingPotion("hpPotion");
 			Command itemCom = new ItemCommand(0,"");
 			uint healingpower = (item as HealingPotion).HPvalue;
 			Assert.IsTrue(itemCom.ToString() == "use item " + 0 + " in player bag");
 			Player player = new Player();
+			player.location = node;
 			player.bag.Add(item);
 			player.HP -= 20;
 			int pHP = player.HP;
