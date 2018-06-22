@@ -68,42 +68,62 @@ namespace STVRogue.GameLogic
         [TestMethod]
         public void MSTest_fight_multiple_packs()
         {
+            Game game = new Game();
             Utils.RandomGenerator.initializeWithSeed(0);
             Random r = Utils.RandomGenerator.rnd;
-            Player P = new Player();
+            game.player = new Player();
+            game.dungeon = new Dungeon();
             Pack pack = new Pack("pack", 2);
             pack.members[0].HP = 5;
             pack.members[1].HP = 5;
             pack.startingHP = 10;
             Node fightNode = new Node(0);
+            game.player.dungeon = game.dungeon;
+            game.player.zone = 1;
+            game.dungeon.zone.Add(1, new List<Node>());
             fightNode.packs.Add(pack);
-            P.location = fightNode;
+            game.dungeon.zone[1].Add(fightNode);
+            pack.dungeon = game.dungeon;
+            game.player.location = fightNode;
             pack.location = fightNode;
-            fightNode.fight(P, 0, true);
-            Assert.IsTrue(!fightNode.contested(P));
+            while (game.player.location.contested(game.player))
+            {
+                game.update(new AttackCommand(pack.members[0].id));
+            }
+            Assert.IsTrue(!fightNode.contested(game.player));
             Assert.IsTrue(fightNode.packs.Count == 0);
-            Assert.IsTrue(P.KillPoint == 2);
+            Assert.IsTrue(game.player.KillPoint == 2);
         }
 
         [TestMethod]
         public void MSTest_combat_pack_not_flees_does_attack_dies()
         {
+            Game game = new Game();
+            game.dungeon = new Dungeon();
             Utils.RandomGenerator.initializeWithSeed(0);
             Random r = Utils.RandomGenerator.rnd;
-            Player P = new Player();
+            game.player = new Player();
             Pack pack = new Pack("pack", 1);
             pack.members[0].HP = 7;
             pack.startingHP = 7;
             Node fightNode = new Node(0);
             Node retreatNode = new Node(0);
+            game.player.location = fightNode;
+            game.player.dungeon = game.dungeon;
+            game.dungeon.zone.Add(1, new List<Node>());
+            pack.location = game.player.location;
+            game.dungeon.zone[1].Add(fightNode);
+            game.dungeon.zone[1].Add(retreatNode);
+            game.player.zone = 1;
             fightNode.packs.Add(pack);
             fightNode.connect(retreatNode);
-            P.location = fightNode;
-            pack.location = fightNode;
-            fightNode.fight(P, 0, true);
-            Assert.IsTrue(!fightNode.contested(P));
+            while (fightNode.contested(game.player))
+            {
+                game.update(new AttackCommand(pack.members[0].id));
+            }
+            Assert.IsTrue(!fightNode.contested(game.player));
             Assert.IsTrue(fightNode.packs.Count == 0);
-            Assert.IsTrue(P.KillPoint == 1);
+            Assert.IsTrue(game.player.KillPoint == 1);
         }
 
         [TestMethod]
